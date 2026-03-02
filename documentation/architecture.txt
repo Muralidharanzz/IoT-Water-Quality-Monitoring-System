@@ -1,0 +1,19 @@
+# Architecture Overview
+
+## Hardware Layer
+Component: ESP32 Microcontroller
+Responsibility: Interfacing with physical water quality sensors (pH, TDS, Turbidity, Temperature), formatting the data into JSON, and transmitting it securely over WiFi to the cloud.
+
+## Cloud & Database Layer
+Component: Firebase Realtime Database & API Services
+Responsibility: Acts as the centralized NoSQL data store. Holds `users` data for authentication policies, `sensorData/latest` for real-time dashboard updates, and `sensorData/history` for graphing and reports. Access is governed via Firebase Security Rules.
+
+## Authentication Layer
+Component: Firebase Authentication
+Responsibility: Handing identity verification (Email/Password). Maps logged-in users to an internal `users` document containing Role (Admin/User) and Approval status.
+
+## Frontend Presentation Layer
+Component: Vanilla HTML/CSS/JS (Serverless Web App)
+Responsibility: A dynamic, responsive interface styled with CSS Glassmorphism logic. Consumes Firebase SDKs to subscribe to data feeds.
+- **Admin Dashboard**: Advanced data views, historic graphs (Chart.js), user approval workflows, and CSV/PDF generation.
+- **User Dashboard**: Simplified real-time views and localized public health alerts based on threshold parameters.
