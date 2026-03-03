@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup - AquaSense</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box glass-card">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-lock text-warning" style="font-size: 3rem;"></i>
+                <h2 class="fw-bold mt-2">Admin Setup</h2>
+                <p class="text-muted">Create the first administrator account</p>
+            </div>
+
+            <form id="admin-setup-form">
+                <div class="mb-3">
+                    <label for="admin-name" class="form-label">Admin Name</label>
+                    <input type="text" class="form-control" id="admin-name" placeholder="Administrator name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="admin-email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="admin-email" placeholder="admin@example.com" required>
+                </div>
+                <div class="mb-4">
+                    <label for="admin-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="admin-password" placeholder="Min. 6 characters" required minlength="6">
+                </div>
+                <div id="setup-error" class="alert alert-danger d-none small py-2"></div>
+                <div id="setup-success" class="alert alert-success d-none small py-2"></div>
+                <button type="submit" class="btn btn-primary w-100" id="setup-btn">
+                    <i class="bi bi-shield-check me-2"></i>Create Admin Account
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <a href="index.html" class="text-muted text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Back to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/admin-setup.js"></script>
+</body>
+</html>

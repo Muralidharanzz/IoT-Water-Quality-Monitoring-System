@@ -4,19 +4,16 @@
 #include <DallasTemperature.h>
 #include <time.h>
 
-// ================= WIFI =================
 #define WIFI_SSID "Test"
 #define WIFI_PASSWORD "12345678"
 
-// ================= FIREBASE =================
-#define API_KEY "AIzaSyCTERiYn7j4-7VtVQy_SCDtPaJrUcBFiEA"
-#define DATABASE_URL "https://water-quality-monitoring-9a110-default-rtdb.asia-southeast1.firebasedatabase.app/"
+#define API_KEY "AIzaSyDFCNi5FYEjLWs2paWBIKsuxb8XHOUfOLo"
+#define DATABASE_URL "https://iot-wq-monitor-2026-default-rtdb.firebaseio.com/"
 
 FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
-// ================= SENSOR PINS =================
 #define PH_PIN 34
 #define TURBIDITY_PIN 35
 #define TDS_PIN 32
@@ -25,7 +22,6 @@ FirebaseConfig config;
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
-// ================= CONNECT WIFI =================
 void connectWiFi() {
   WiFi.disconnect(true, true);
   delay(2000);
@@ -45,7 +41,6 @@ void connectWiFi() {
   Serial.println(WiFi.localIP());
 }
 
-// ================= GET TIMESTAMP =================
 String getTimeStamp() {
   configTime(0, 0, "pool.ntp.org");
   time_t now = time(nullptr);
@@ -82,7 +77,6 @@ void setup() {
 
 void loop() {
 
-  // ===== READ SENSORS =====
   sensors.requestTemperatures();
   float temperature = sensors.getTempCByIndex(0);
 
@@ -90,7 +84,6 @@ void loop() {
   float turbidity = (analogRead(TURBIDITY_PIN) * 20.0) / 4095.0;
   float tdsValue = (analogRead(TDS_PIN) * 1000.0) / 4095.0;
 
-  // ===== CREATE JSON OBJECT =====
   FirebaseJson json;
 
   json.set("temperature", temperature);
@@ -99,10 +92,8 @@ void loop() {
   json.set("tds", tdsValue);
   json.set("timestamp", getTimeStamp());
 
-  // ===== UPLOAD LATEST DATA =====
   Firebase.RTDB.setJSON(&fbdo, "/current", &json);
 
-  // ===== LOG HISTORY =====
   Firebase.RTDB.pushJSON(&fbdo, "/history", &json);
 
   Serial.println("Raw Sensor Data Uploaded");

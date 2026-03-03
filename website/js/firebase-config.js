@@ -3,15 +3,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebas
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-// Firebase configuration from prompt
+// Firebase configuration for iot-wq-monitor-2026
 const firebaseConfig = {
-  apiKey: "AIzaSyCTERiYn7j4-7VtVQy_SCDtPaJrUcBFiEA",
-  authDomain: "water-quality-monitoring-9a110.firebaseapp.com",
-  databaseURL: "https://water-quality-monitoring-9a110-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "water-quality-monitoring-9a110",
-  storageBucket: "water-quality-monitoring-9a110.firebasestorage.app",
-  messagingSenderId: "560397927880",
-  appId: "1:560397927880:web:6873f37c0f87f0ae28acfd"
+  apiKey: "AIzaSyDFCNi5FYEjLWs2paWBIKsuxb8XHOUfOLo",
+  authDomain: "iot-wq-monitor-2026.firebaseapp.com",
+  databaseURL: "https://iot-wq-monitor-2026-default-rtdb.firebaseio.com",
+  projectId: "iot-wq-monitor-2026",
+  storageBucket: "iot-wq-monitor-2026.firebasestorage.app",
+  messagingSenderId: "830608170525",
+  appId: "1:830608170525:web:59368e2d09892a81c9b0f4"
 };
 
 // Initialize Firebase
