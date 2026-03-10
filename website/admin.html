@@ -55,6 +55,17 @@
         </ul>
 
         <div class="mt-auto">
+            <div class="border-top mb-3 pt-3" style="border-color: var(--glass-border) !important;">
+                <a href="profile.html" class="nav-link text-white py-2 px-3 mb-1" style="font-size:0.9rem;">
+                    <i class="bi bi-person me-2"></i> Profile
+                </a>
+                <a href="settings.html" class="nav-link text-white py-2 px-3 mb-1" style="font-size:0.9rem;">
+                    <i class="bi bi-gear me-2"></i> Settings
+                </a>
+                <a href="about.html" class="nav-link text-white py-2 px-3 mb-1" style="font-size:0.9rem;">
+                    <i class="bi bi-info-circle me-2"></i> About
+                </a>
+            </div>
             <div class="d-flex align-items-center p-3 glass-card mb-3">
                 <i class="bi bi-person-circle fs-3 me-3 text-primary"></i>
                 <div id="admin-user-info">
@@ -68,13 +79,43 @@
         </div>
     </div>
 
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
     <!-- Main Content -->
     <div class="main-content">
         <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Dashboard Overview</h2>
-            <div id="connection-status" class="status-badge status-safe">
-                <i class="bi bi-wifi"></i> Online
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="bi bi-list"></i></button>
+                <h2 class="fw-bold">Dashboard Overview</h2>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <!-- Notification Bell -->
+                <div class="position-relative" id="notif-bell-wrap">
+                    <button class="btn btn-outline-light position-relative" id="notif-bell-btn"
+                        style="border-color: var(--glass-border); border-radius:50%; width:40px; height:40px; padding:0;">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
+                            id="notif-badge">0</span>
+                    </button>
+                    <div class="glass-card p-0 d-none" id="notif-dropdown"
+                        style="position:absolute; right:0; top:48px; width:340px; max-height:400px; overflow-y:auto; z-index:999; border-radius:12px;">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom"
+                            style="border-color: var(--glass-border) !important;">
+                            <h6 class="mb-0 fw-bold"><i class="bi bi-bell me-2"></i>Notifications</h6>
+                            <button class="btn btn-sm text-muted" id="notif-clear-btn" style="font-size:0.8rem;">Clear
+                                All</button>
+                        </div>
+                        <div id="notif-list" style="max-height:340px; overflow-y:auto;">
+                            <div class="text-center text-muted p-4"><small>No notifications yet</small></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="connection-status" class="status-badge status-safe">
+                    <i class="bi bi-wifi"></i> Online
+                </div>
             </div>
         </div>
 
@@ -123,11 +164,26 @@
             </div>
         </div>
 
-        <!-- Overall Status Banner -->
-        <div class="glass-card p-4 mb-5 text-center" id="overall-status-card">
-            <h4 class="mb-2">Overall Water Quality Status</h4>
-            <h1 class="fw-bold my-3" id="overall-status-text">ANALYZING...</h1>
-            <p class="text-muted mb-0" id="overall-recommendation">Fetching latest data...</p>
+        <!-- Water Intelligence Section -->
+        <div id="wq-status-card" class="mb-4">
+            <!-- Rendered dynamically by water-intelligence.js -->
+        </div>
+
+        <div id="wq-recommendation" class="mb-4">
+            <!-- Recommendation Box -->
+        </div>
+
+        <div class="wq-intelligence-grid mb-5">
+            <div class="glass-card p-4">
+                <div id="wq-risk-meter">
+                    <!-- Risk Gauge rendered here -->
+                </div>
+            </div>
+            <div class="glass-card p-4">
+                <div id="wq-disease-prediction">
+                    <!-- Disease cards rendered here -->
+                </div>
+            </div>
         </div>
 
         <!-- History Graphs -->
@@ -187,7 +243,138 @@
                 </div>
             </div>
         </div>
+
+        <!-- Custom Threshold Config -->
+        <div id="section-thresholds" class="mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-sliders me-2 text-warning"></i>Custom Safe Limits</h4>
+            <div class="glass-card p-4">
+                <p class="text-muted mb-3">Adjust water quality safe thresholds. Changes apply to intelligence analysis.
+                </p>
+                <div class="row g-3">
+                    <div class="col-md-3 col-6">
+                        <label class="form-label small text-muted">pH Min <span class="text-info">(0 - 7)</span></label>
+                        <input type="number" class="form-control" id="thresh-ph-min" value="6.5" step="0.1" min="0"
+                            max="7">
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label class="form-label small text-muted">pH Max <span class="text-info">(7 -
+                                14)</span></label>
+                        <input type="number" class="form-control" id="thresh-ph-max" value="8.5" step="0.1" min="7"
+                            max="14">
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label class="form-label small text-muted">TDS Max <span class="text-info">(50 - 500
+                                ppm)</span></label>
+                        <input type="number" class="form-control" id="thresh-tds" value="300" step="10" min="50"
+                            max="500">
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label class="form-label small text-muted">Turbidity Max <span class="text-info">(1 - 10
+                                NTU)</span></label>
+                        <input type="number" class="form-control" id="thresh-turb" value="5" step="0.5" min="1"
+                            max="10">
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <label class="form-label small text-muted">Temp Max <span class="text-info">(20 - 50
+                                °C)</span></label>
+                        <input type="number" class="form-control" id="thresh-temp" value="35" step="1" min="20"
+                            max="50">
+                    </div>
+                    <div class="col-md-9 col-6 d-flex align-items-end">
+                        <button class="btn btn-primary" id="save-thresholds-btn">
+                            <i class="bi bi-check-lg me-1"></i>Save Thresholds
+                        </button>
+                        <span class="ms-3 small" id="thresh-save-msg"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Summary -->
+        <div id="section-analytics" class="mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line me-2 text-info"></i>Analytics Summary</h4>
+            <div class="row g-3">
+                <div class="col-md-3 col-6">
+                    <div class="glass-card p-3 text-center">
+                        <small class="text-muted d-block mb-1">Avg pH</small>
+                        <span class="data-value fs-3" id="avg-ph" style="color: #0ea5e9;">--</span>
+                        <div class="small mt-1" id="trend-ph"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="glass-card p-3 text-center">
+                        <small class="text-muted d-block mb-1">Avg TDS</small>
+                        <span class="data-value fs-3" id="avg-tds" style="color: #8b5cf6;">--</span>
+                        <div class="small mt-1" id="trend-tds"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="glass-card p-3 text-center">
+                        <small class="text-muted d-block mb-1">Avg Turbidity</small>
+                        <span class="data-value fs-3" id="avg-turb" style="color: #10b981;">--</span>
+                        <div class="small mt-1" id="trend-turb"></div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="glass-card p-3 text-center">
+                        <small class="text-muted d-block mb-1">Avg Temp</small>
+                        <span class="data-value fs-3" id="avg-temp" style="color: #f59e0b;">--</span>
+                        <div class="small mt-1" id="trend-temp"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-bottom-nav">
+        <div class="nav-items">
+            <button class="nav-item active"
+                onclick="document.getElementById('section-overview')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-speedometer2"></i>Overview
+            </button>
+            <button class="nav-item"
+                onclick="document.getElementById('section-intelligence')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-droplet-half"></i>Quality
+            </button>
+            <button class="nav-item"
+                onclick="document.getElementById('section-history')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-graph-up"></i>History
+            </button>
+            <button class="nav-item"
+                onclick="document.getElementById('section-users')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-people"></i>Users
+            </button>
+            <button class="nav-item" id="mobile-menu-toggle">
+                <i class="bi bi-three-dots"></i>More
+            </button>
+        </div>
+    </nav>
+
+    <!-- Theme Init + Mobile Nav JS -->
+    <script>
+        (function () {
+            const settings = JSON.parse(localStorage.getItem('aquasense_settings') || '{}');
+            if (settings.darkMode === false) document.documentElement.setAttribute('data-theme', 'light');
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const moreBtn = document.getElementById('mobile-menu-toggle');
+
+            function toggleSidebar() {
+                sidebar?.classList.toggle('active');
+                overlay?.classList.toggle('active');
+            }
+
+            menuBtn?.addEventListener('click', toggleSidebar);
+            moreBtn?.addEventListener('click', toggleSidebar);
+            overlay?.addEventListener('click', toggleSidebar);
+        });
+    </script>
 
     <!-- Admin Logic -->
     <script type="module" src="js/admin.js"></script>

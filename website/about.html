@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - AquaSense</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark border-bottom glass-card rounded-0 mb-0"
+        style="border-color: var(--glass-border) !important;">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+                <i class="bi bi-droplet-half text-primary me-2 fs-3"></i>
+                AquaSense
+            </a>
+            <div class="d-flex align-items-center ms-auto gap-2">
+                <a href="index.html" class="btn btn-outline-light btn-sm" style="border-color: var(--glass-border);">
+                    <i class="bi bi-house me-1"></i> Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="auth-container" style="min-height: auto; padding: 60px 20px 40px;">
+        <div class="text-center" style="max-width: 700px;">
+            <i class="bi bi-droplet-half text-primary" style="font-size: 4rem; opacity: 0.8;"></i>
+            <h1 class="display-4 fw-bold mt-3" style="color: var(--primary);">AquaSense</h1>
+            <p class="lead" style="color: #94a3b8;">IoT-Powered Water Quality Monitoring System</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container pb-5" style="max-width: 900px;">
+
+        <!-- What is AquaSense -->
+        <div class="glass-card p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-info-circle text-primary me-2"></i>What is AquaSense?</h4>
+            <p style="color: #cbd5e1;">AquaSense is a real-time IoT water quality monitoring system that uses ESP32
+                microcontrollers and sensors to continuously measure critical water parameters. The data is transmitted
+                to Firebase and displayed on a beautiful, intelligent dashboard accessible from any device.</p>
+            <p style="color: #94a3b8;">Our system provides <strong style="color:#0ea5e9;">intelligent disease
+                    prediction</strong>, <strong style="color:#10b981;">safety classification</strong>, and <strong
+                    style="color:#f59e0b;">risk assessment</strong> — going beyond simple monitoring to protect your
+                community's health.</p>
+        </div>
+
+        <!-- Parameters Monitored -->
+        <div class="glass-card p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-clipboard-data text-primary me-2"></i>Parameters Monitored</h4>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="p-3 rounded"
+                        style="background: rgba(14,165,233,0.08); border: 1px solid rgba(14,165,233,0.2); border-radius:12px;">
+                        <h6 class="fw-bold" style="color:#0ea5e9;"><i class="bi bi-activity me-2"></i>pH Level</h6>
+                        <p class="mb-1" style="color:#cbd5e1;">Measures acidity/alkalinity of water</p>
+                        <span class="wq-param-chip wq-param-ok">Safe: 6.5 – 8.5</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded"
+                        style="background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); border-radius:12px;">
+                        <h6 class="fw-bold" style="color:#8b5cf6;"><i class="bi bi-water me-2"></i>TDS (Total Dissolved
+                            Solids)</h6>
+                        <p class="mb-1" style="color:#cbd5e1;">Total mineral content in water</p>
+                        <span class="wq-param-chip wq-param-ok">Safe: &lt; 300 ppm</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded"
+                        style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius:12px;">
+                        <h6 class="fw-bold" style="color:#10b981;"><i class="bi bi-cloud-haze me-2"></i>Turbidity</h6>
+                        <p class="mb-1" style="color:#cbd5e1;">Cloudiness caused by suspended particles</p>
+                        <span class="wq-param-chip wq-param-ok">Safe: &lt; 5 NTU</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded"
+                        style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius:12px;">
+                        <h6 class="fw-bold" style="color:#f59e0b;"><i
+                                class="bi bi-thermometer-half me-2"></i>Temperature</h6>
+                        <p class="mb-1" style="color:#cbd5e1;">Water temperature affecting bacterial growth</p>
+                        <span class="wq-param-chip wq-param-ok">Safe: &lt; 35°C</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Water Intelligence -->
+        <div class="glass-card p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-shield-check text-primary me-2"></i>Water Intelligence Engine</h4>
+            <p style="color: #cbd5e1;">Our intelligent engine analyzes all parameters simultaneously to provide:</p>
+            <div class="table-responsive">
+                <table class="table text-white mb-0">
+                    <thead>
+                        <tr>
+                            <th>Exceeded</th>
+                            <th>Status</th>
+                            <th>Recommendation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td><span style="color:#10b981;">Safe to Drink</span></td>
+                            <td style="color:#94a3b8;">Water is safe for drinking and cooking</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td><span style="color:#f59e0b;">Slightly Contaminated</span></td>
+                            <td style="color:#94a3b8;">Boil before drinking</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><span style="color:#f97316;">Moderately Unsafe</span></td>
+                            <td style="color:#94a3b8;">Use purifier before consumption</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><span style="color:#ef4444;">Highly Unsafe</span></td>
+                            <td style="color:#94a3b8;">Avoid drinking, use only for cleaning</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><span style="color:#dc2626;">Severe Contamination</span></td>
+                            <td style="color:#94a3b8;">Do not use water, immediate action required</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Disease Prediction -->
+        <div class="glass-card p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-virus text-danger me-2"></i>Disease Prediction</h4>
+            <p style="color: #cbd5e1;">When 3 or more parameters exceed safe limits, the system predicts potential
+                waterborne diseases:</p>
+            <div class="row g-3">
+                <div class="col-md-4 col-6">
+                    <div class="wq-disease-card" style="--disease-color: #ef4444;">
+                        <div class="wq-disease-icon"><i class="bi bi-bug-fill"></i></div>
+                        <div class="wq-disease-info">
+                            <h6>Cholera</h6><span class="wq-disease-severity" style="color: #ef4444">Critical</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="wq-disease-card" style="--disease-color: #f97316;">
+                        <div class="wq-disease-icon"><i class="bi bi-virus"></i></div>
+                        <div class="wq-disease-info">
+                            <h6>Typhoid</h6><span class="wq-disease-severity" style="color: #f97316">High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="wq-disease-card" style="--disease-color: #f97316;">
+                        <div class="wq-disease-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+                        <div class="wq-disease-info">
+                            <h6>Gastroenteritis</h6><span class="wq-disease-severity" style="color: #f97316">High</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="wq-disease-card" style="--disease-color: #f59e0b;">
+                        <div class="wq-disease-icon"><i class="bi bi-droplet-fill"></i></div>
+                        <div class="wq-disease-info">
+                            <h6>Diarrhea</h6><span class="wq-disease-severity" style="color: #f59e0b">Moderate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="wq-disease-card" style="--disease-color: #f59e0b;">
+                        <div class="wq-disease-icon"><i class="bi bi-bandaid-fill"></i></div>
+                        <div class="wq-disease-info">
+                            <h6>Skin Irritation</h6><span class="wq-disease-severity"
+                                style="color: #f59e0b">Moderate</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="glass-card p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-question-circle text-primary me-2"></i>FAQ</h4>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item" style="background:transparent; border-color: var(--glass-border);">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq1" style="background: rgba(15,23,42,0.5); color: var(--text-main);">
+                            How does AquaSense work?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body" style="background: rgba(15,23,42,0.3); color: #94a3b8;">
+                            ESP32 sensors measure water parameters (pH, TDS, Turbidity, Temperature) and send data to
+                            Firebase Realtime Database. The web dashboard fetches this data in real-time and runs our
+                            Water Intelligence Engine to classify quality, predict diseases, and assess risk levels.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" style="background:transparent; border-color: var(--glass-border);">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq2" style="background: rgba(15,23,42,0.5); color: var(--text-main);">
+                            What hardware is used?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body" style="background: rgba(15,23,42,0.3); color: #94a3b8;">
+                            ESP32 microcontroller, pH sensor module, TDS sensor, turbidity sensor, DS18B20 temperature
+                            sensor, and a Wi-Fi connection for cloud data transmission.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" style="background:transparent; border-color: var(--glass-border);">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq3" style="background: rgba(15,23,42,0.5); color: var(--text-main);">
+                            Who can access the dashboard?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body" style="background: rgba(15,23,42,0.3); color: #94a3b8;">
+                            Community users can register and view water quality data after admin approval. Admins have
+                            full access including user management, data export, and historical analysis.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" style="background:transparent; border-color: var(--glass-border);">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq4" style="background: rgba(15,23,42,0.5); color: var(--text-main);">
+                            How accurate is disease prediction?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body" style="background: rgba(15,23,42,0.3); color: #94a3b8;">
+                            Disease prediction is based on WHO and BIS guidelines for water quality parameters. It
+                            identifies potential risks when multiple parameters exceed safe limits simultaneously. It
+                            serves as an early warning system — always consult medical professionals for health
+                            concerns.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="glass-card p-4 mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-gear text-primary me-2"></i>Technology Stack</h4>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="wq-param-chip wq-param-ok">ESP32</span>
+                <span class="wq-param-chip wq-param-ok">Firebase</span>
+                <span class="wq-param-chip wq-param-ok">Chart.js</span>
+                <span class="wq-param-chip wq-param-ok">Bootstrap 5</span>
+                <span class="wq-param-chip wq-param-ok">JavaScript ES6+</span>
+                <span class="wq-param-chip wq-param-ok">Glassmorphism UI</span>
+                <span class="wq-param-chip wq-param-ok">PWA</span>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-5 mb-3" style="color: #64748b;">
+            <p class="mb-1">Built with <i class="bi bi-heart-fill text-danger"></i> by AquaSense Team</p>
+            <p class="mb-0"><small>© 2026 AquaSense IoT Water Quality Monitoring System</small></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -7,104 +7,372 @@
     <title>User Dashboard - AquaSense</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
 
-    <!-- Top Navbar for User -->
-    <nav class="navbar navbar-expand-lg navbar-dark border-bottom glass-card rounded-0 mb-4"
-        style="border-color: var(--glass-border) !important;">
-        <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
-                <i class="bi bi-droplet-half text-primary me-2 fs-3"></i>
-                AquaSense
-            </a>
-            <div class="d-flex align-items-center ms-auto">
-                <span class="text-muted me-3 d-none d-md-block" id="user-greeting">Welcome, User</span>
-                <span class="status-badge status-safe me-3">Approved</span>
-                <button class="btn btn-outline-danger btn-sm" id="logout-btn">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
-            </div>
+    <!-- Mobile Sidebar Toggle -->
+    <button class="btn btn-outline-light d-lg-none position-fixed" id="sidebar-toggle"
+        style="top: 15px; left: 15px; z-index: 1050; border-color: var(--glass-border);">
+        <i class="bi bi-list fs-4"></i>
+    </button>
+    <div id="sidebar-overlay" class="d-none" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;">
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="d-flex align-items-center mb-5 mt-2">
+            <i class="bi bi-droplet-half text-primary me-2" style="font-size: 2rem;"></i>
+            <h4 class="mb-0 fw-bold">AquaSense</h4>
         </div>
-    </nav>
+
+        <ul class="nav flex-column mb-auto gap-2">
+            <li class="nav-item">
+                <a href="#overview" class="nav-link text-white active glass-card py-2 px-3">
+                    <i class="bi bi-speedometer2 me-2"></i> Overview
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#intelligence" class="nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
+                    <i class="bi bi-shield-check me-2"></i> Water Intelligence
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#history" class="nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
+                    <i class="bi bi-graph-up me-2"></i> History Graphs
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#parameters" class="nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
+                    <i class="bi bi-clipboard-data me-2"></i> Live Parameters
+                </a>
+            </li>
+        </ul>
+
+        <div class="mt-auto">
+            <div class="border-top mb-3 pt-3" style="border-color: var(--glass-border) !important;">
+                <a href="profile.html" class="nav-link text-white py-2 px-3 mb-1" style="font-size:0.9rem;">
+                    <i class="bi bi-person me-2"></i> Profile
+                </a>
+                <a href="settings.html" class="nav-link text-white py-2 px-3 mb-1" style="font-size:0.9rem;">
+                    <i class="bi bi-gear me-2"></i> Settings
+                </a>
+                <a href="about.html" class="nav-link text-white py-2 px-3 mb-1" style="font-size:0.9rem;">
+                    <i class="bi bi-info-circle me-2"></i> About
+                </a>
+            </div>
+            <div class="d-flex align-items-center p-3 glass-card mb-3">
+                <i class="bi bi-person-circle fs-3 me-3 text-primary"></i>
+                <div>
+                    <h6 class="mb-0" id="sidebar-user-name">User</h6>
+                    <small class="text-muted">Role: User</small>
+                </div>
+            </div>
+            <button class="btn btn-outline-danger w-100" id="logout-btn">
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <!-- Main Content -->
-    <div class="container main-content" style="margin-left: 0; padding-top: 10px;">
+    <div class="main-content">
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="bi bi-list"></i></button>
+                <div>
+                    <h2 class="fw-bold" id="user-greeting">Community Water Quality</h2>
+                    <p class="text-muted mb-0">Live monitoring status for your community.</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center glass-card py-1 px-3" style="border-radius:20px;">
+                        <i class="bi bi-geo-alt text-primary me-2"></i>
+                        <select class="form-select form-select-sm border-0 bg-transparent text-white"
+                            id="sensor-location" style="min-width:140px; cursor:pointer;">
+                            <option value="default" selected>Main Station</option>
+                            <option value="station-2">Station 2</option>
+                            <option value="station-3">Station 3</option>
+                        </select>
+                    </div>
+                    <!-- Notification Bell -->
+                    <div class="position-relative" id="notif-bell-wrap">
+                        <button class="btn btn-outline-light position-relative" id="notif-bell-btn"
+                            style="border-color: var(--glass-border); border-radius:50%; width:40px; height:40px; padding:0;">
+                            <i class="bi bi-bell fs-5"></i>
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
+                                id="notif-badge">0</span>
+                        </button>
+                        <!-- Dropdown -->
+                        <div class="glass-card p-0 d-none" id="notif-dropdown"
+                            style="position:absolute; right:0; top:48px; width:340px; max-height:400px; overflow-y:auto; z-index:999; border-radius:12px;">
+                            <div class="d-flex justify-content-between align-items-center p-3 border-bottom"
+                                style="border-color: var(--glass-border) !important;">
+                                <h6 class="mb-0 fw-bold"><i class="bi bi-bell me-2"></i>Notifications</h6>
+                                <button class="btn btn-sm text-muted" id="notif-clear-btn"
+                                    style="font-size:0.8rem;">Clear
+                                    All</button>
+                            </div>
+                            <div id="notif-list" style="max-height:340px; overflow-y:auto;">
+                                <div class="text-center text-muted p-4"><small>No notifications yet</small></div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="status-badge status-safe"><i class="bi bi-wifi"></i> Online</span>
+                </div>
+            </div>
 
-        <div class="row mb-4">
-            <div class="col-12 text-center text-md-start">
-                <h2 class="fw-bold">Community Water Quality</h2>
-                <p class="text-muted">Live monitoring status for your community.</p>
+            <!-- Alert Banner -->
+            <div id="alert-banner" class="alert-banner d-none mb-4">
+                <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                <div>
+                    <strong>Water Quality Alert!</strong>
+                    <p class="mb-0" id="alert-message">Safety limits exceeded. Please take precautions.</p>
+                </div>
+            </div>
+
+            <!-- Live Parameters Cards -->
+            <div class="row g-4 mb-5" id="overview">
+                <div class="col-md-3 col-sm-6">
+                    <div class="glass-card p-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-2">pH Level</h6>
+                        <h2 class="data-value" id="val-ph">--</h2>
+                        <span id="badge-ph" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: 6.5 - 8.5</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="glass-card p-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-2">TDS (ppm)</h6>
+                        <h2 class="data-value" id="val-tds">--</h2>
+                        <span id="badge-tds" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: < 300</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="glass-card p-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-2">Turbidity (NTU)</h6>
+                        <h2 class="data-value" id="val-turb">--</h2>
+                        <span id="badge-turb" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: < 5</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="glass-card p-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-2">Temperature (°C)</h6>
+                        <h2 class="data-value" id="val-temp">--</h2>
+                        <span id="badge-temp" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: < 35°C</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Water Intelligence Section -->
+            <div id="intelligence">
+                <div id="wq-status-card" class="mb-4">
+                    <!-- Rendered dynamically by water-intelligence.js -->
+                </div>
+
+                <div id="wq-recommendation" class="mb-4">
+                    <!-- Recommendation Box -->
+                </div>
+
+                <div class="wq-intelligence-grid mb-5">
+                    <div class="glass-card p-4">
+                        <div id="wq-risk-meter">
+                            <!-- Risk Gauge rendered here -->
+                        </div>
+                    </div>
+                    <div class="glass-card p-4">
+                        <div id="wq-disease-prediction">
+                            <!-- Disease cards rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-muted text-center mb-4"><small>Last updated: <span id="last-updated">--</span></small></p>
+
+            <!-- History Graphs -->
+            <div class="glass-card p-4 mb-5" id="history">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                    <h4 class="mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>History Trends</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-outline-light btn-sm" id="export-csv-btn"
+                            style="border-color: var(--glass-border);">
+                            <i class="bi bi-filetype-csv me-1"></i> CSV
+                        </button>
+                        <button class="btn btn-outline-light btn-sm" id="export-pdf-btn"
+                            style="border-color: var(--glass-border);">
+                            <i class="bi bi-filetype-pdf me-1"></i> PDF
+                        </button>
+                    </div>
+                </div>
+                <!-- Date Range Filter -->
+                <div class="d-flex flex-wrap gap-2 mb-3 align-items-end">
+                    <div>
+                        <label class="form-label small text-muted mb-1">From</label>
+                        <input type="date" class="form-control form-control-sm" id="date-from" style="max-width:160px;">
+                    </div>
+                    <div>
+                        <label class="form-label small text-muted mb-1">To</label>
+                        <input type="date" class="form-control form-control-sm" id="date-to" style="max-width:160px;">
+                    </div>
+                    <div>
+                        <label class="form-label small text-muted mb-1">Points</label>
+                        <select class="form-control form-control-sm" id="chart-range" style="max-width:120px;">
+                            <option value="20">Last 20</option>
+                            <option value="50">Last 50</option>
+                            <option value="100">Last 100</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm" id="filter-btn">
+                        <i class="bi bi-funnel me-1"></i> Filter
+                    </button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="userHistoryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Live Parameters Detail -->
+            <div id="parameters" class="glass-card p-4 mb-5">
+                <h4 class="mb-4"><i class="bi bi-clipboard-data me-2 text-primary"></i>Parameter Details</h4>
+                <div class="table-responsive">
+                    <table class="table text-white mb-0">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Current Value</th>
+                                <th>Safe Range</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="param-details-body">
+                            <tr>
+                                <td><i class="bi bi-activity text-primary me-2"></i>pH Level</td>
+                                <td id="detail-ph">--</td>
+                                <td>6.5 – 8.5</td>
+                                <td><span id="detail-badge-ph" class="status-badge status-safe">--</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="bi bi-water text-info me-2"></i>TDS</td>
+                                <td id="detail-tds">--</td>
+                                <td>&lt; 300 ppm</td>
+                                <td><span id="detail-badge-tds" class="status-badge status-safe">--</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="bi bi-cloud-haze text-secondary me-2"></i>Turbidity</td>
+                                <td id="detail-turb">--</td>
+                                <td>&lt; 5 NTU</td>
+                                <td><span id="detail-badge-turb" class="status-badge status-safe">--</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="bi bi-thermometer-half text-warning me-2"></i>Temperature</td>
+                                <td id="detail-temp">--</td>
+                                <td>&lt; 35°C</td>
+                                <td><span id="detail-badge-temp" class="status-badge status-safe">--</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sensor Map -->
+        <div id="section-map" class="mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-geo-alt me-2 text-danger"></i>Sensor Location Map</h4>
+            <div class="glass-card p-3" style="overflow:hidden; border-radius:16px;">
+                <div id="sensor-map" style="height: 300px; border-radius: 12px; z-index: 1;"></div>
             </div>
         </div>
 
-        <!-- Alert Banner -->
-        <div id="alert-banner" class="alert-banner d-none mx-auto mb-4" style="max-width: 800px;">
-            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
-            <div>
-                <strong>Water Quality Alert!</strong>
-                <p class="mb-0" id="alert-message">Safety limits exceeded. Please take precautions.</p>
-            </div>
-        </div>
-
-        <!-- Overall Status Banner -->
-        <div class="glass-card p-5 mb-5 text-center mx-auto" id="overall-status-card" style="max-width: 800px;">
-            <h5 class="mb-3 text-uppercase tracking-wider text-muted">Current Status</h5>
-            <h1 class="fw-bold display-4 mb-4" id="overall-status-text">ANALYZING...</h1>
-            <div class="p-3 rounded bg-dark bg-opacity-50 border border-secondary"
-                style="border-color: var(--glass-border) !important;">
-                <p class="mb-0 fs-5" id="overall-recommendation">Fetching latest safety recommendations...</p>
-            </div>
-            <p class="text-muted mt-4 mb-0"><small>Last updated: <span id="last-updated">--</span></small></p>
-        </div>
-
-        <!-- Live Parameters Cards -->
-        <div class="row g-4 mb-5 justify-content-center">
-            <div class="col-md-3 col-sm-6">
-                <div class="glass-card p-4 text-center h-100">
-                    <div class="mb-3">
-                        <i class="bi bi-activity fs-1 text-primary"></i>
+        <!-- Weekly Report -->
+        <div id="section-report" class="mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-file-earmark-bar-graph me-2 text-info"></i>Weekly Summary</h4>
+            <div class="glass-card p-4">
+                <div class="row g-3 text-center">
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Safe Days</div>
+                        <div class="fs-3 fw-bold" style="color:#10b981;" id="safe-days">--</div>
                     </div>
-                    <h6 class="text-muted text-uppercase mb-2">pH Level</h6>
-                    <h3 class="data-value mb-3" id="val-ph">--</h3>
-                    <span id="badge-ph" class="status-badge status-safe">Loading...</span>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="glass-card p-4 text-center h-100">
-                    <div class="mb-3">
-                        <i class="bi bi-water fs-1 text-info"></i>
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Warning Days</div>
+                        <div class="fs-3 fw-bold" style="color:#f59e0b;" id="warning-days">--</div>
                     </div>
-                    <h6 class="text-muted text-uppercase mb-2">TDS (ppm)</h6>
-                    <h3 class="data-value mb-3" id="val-tds">--</h3>
-                    <span id="badge-tds" class="status-badge status-safe">Loading...</span>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="glass-card p-4 text-center h-100">
-                    <div class="mb-3">
-                        <i class="bi bi-cloud-haze fs-1 text-secondary"></i>
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Critical Days</div>
+                        <div class="fs-3 fw-bold" style="color:#ef4444;" id="critical-days">--</div>
                     </div>
-                    <h6 class="text-muted text-uppercase mb-2">Turbidity (NTU)</h6>
-                    <h3 class="data-value mb-3" id="val-turb">--</h3>
-                    <span id="badge-turb" class="status-badge status-safe">Loading...</span>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="glass-card p-4 text-center h-100">
-                    <div class="mb-3">
-                        <i class="bi bi-thermometer-half fs-1 text-warning"></i>
+                    <div class="col-6 col-md-3">
+                        <div class="small text-muted">Total Readings</div>
+                        <div class="fs-3 fw-bold" style="color:#0ea5e9;" id="total-readings">--</div>
                     </div>
-                    <h6 class="text-muted text-uppercase mb-2">Temperature (°C)</h6>
-                    <h3 class="data-value mb-3" id="val-temp">--</h3>
-                    <span id="badge-temp" class="status-badge status-safe">Loading...</span>
                 </div>
             </div>
         </div>
 
     </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-bottom-nav">
+        <div class="nav-items">
+            <button class="nav-item active"
+                onclick="document.getElementById('section-overview')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-speedometer2"></i>Overview
+            </button>
+            <button class="nav-item"
+                onclick="document.getElementById('section-intelligence')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-droplet-half"></i>Quality
+            </button>
+            <button class="nav-item"
+                onclick="document.getElementById('section-history')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-graph-up"></i>History
+            </button>
+            <button class="nav-item"
+                onclick="document.getElementById('section-params')?.scrollIntoView({behavior:'smooth'})">
+                <i class="bi bi-table"></i>Params
+            </button>
+            <button class="nav-item" id="mobile-menu-toggle">
+                <i class="bi bi-three-dots"></i>More
+            </button>
+        </div>
+    </nav>
+
+    <!-- Theme Init + Mobile Nav JS -->
+    <script>
+        // Apply saved theme
+        (function () {
+            const settings = JSON.parse(localStorage.getItem('aquasense_settings') || '{}');
+            if (settings.darkMode === false) document.documentElement.setAttribute('data-theme', 'light');
+        })();
+
+        // Mobile sidebar toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const moreBtn = document.getElementById('mobile-menu-toggle');
+
+            function toggleSidebar() {
+                sidebar?.classList.toggle('active');
+                overlay?.classList.toggle('active');
+            }
+
+            menuBtn?.addEventListener('click', toggleSidebar);
+            moreBtn?.addEventListener('click', toggleSidebar);
+            overlay?.addEventListener('click', toggleSidebar);
+        });
+    </script>
 
     <!-- User Logic -->
     <script type="module" src="js/user.js"></script>

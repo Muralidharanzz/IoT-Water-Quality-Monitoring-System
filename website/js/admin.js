@@ -1,6 +1,8 @@
 import { database, auth } from './firebase-config.js';
 import { ref, onValue, get, update, query, limitToLast, orderByChild } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+import { analyzeWaterQuality, renderIntelligenceUI } from './water-intelligence.js';
+import { showToast, sendCriticalEmailAlert } from './notifications.js';
 
 // DOM Elements
 const elements = {
@@ -12,9 +14,6 @@ const elements = {
     tdsBadge: document.getElementById('badge-tds'),
     turbBadge: document.getElementById('badge-turb'),
     tempBadge: document.getElementById('badge-temp'),
-    statusText: document.getElementById('overall-status-text'),
-    recommendation: document.getElementById('overall-recommendation'),
-    statusCard: document.getElementById('overall-status-card'),
     alertBanner: document.getElementById('alert-banner'),
     alertMessage: document.getElementById('alert-message'),
     pendingUsers: document.getElementById('pending-users-list'),
@@ -28,7 +27,7 @@ const elements = {
 let historyChart;
 
 // Thresholds
-const SAFE_LIMITS = {
+const PARAM_RANGES = {
     ph: { min: 6.5, max: 8.5 },
     tds: { max: 300 },
     turb: { max: 5 },
@@ -153,33 +152,22 @@ function updateDashboardUI(data) {
     updateBadge(elements.turbBadge, turbStatus);
     updateBadge(elements.tempBadge, tempStatus);
 
-    // Overall Status
-    const statuses = [phStatus.status, tdsStatus.status, turbStatus.status, tempStatus.status];
+    // Water Intelligence - analyze and render
+    const analysis = analyzeWaterQuality(data);
+    renderIntelligenceUI(analysis);
 
-    if (statuses.includes('Danger')) {
-        elements.statusText.textContent = "UNSAFE";
-        elements.statusText.className = "fw-bold my-3 text-danger";
-        elements.recommendation.textContent = "Water quality is hazardous. Immediate action required. Do not consume.";
-        elements.statusCard.className = "glass-card p-4 mb-5 text-center bg-danger bg-opacity-10 border-danger";
-
+    // Alert banner + toast + email
+    if (analysis.exceededCount >= 3) {
         elements.alertBanner.classList.remove('d-none');
-        elements.alertMessage.innerHTML = `High Alert: 
-            ${phStatus.status === 'Danger' ? `pH (${data.ph}) ` : ''}
-            ${tdsStatus.status === 'Danger' ? `TDS (${data.tds}) ` : ''}
-            ${turbStatus.status === 'Danger' ? `Turbidity (${data.turbidity}) ` : ''}
-            ${tempStatus.status === 'Danger' ? `Temp (${data.temperature}) ` : ''} out of safe bounds.`;
-
-    } else if (statuses.includes('Warning')) {
-        elements.statusText.textContent = "WARNING";
-        elements.statusText.className = "fw-bold my-3 text-warning";
-        elements.recommendation.textContent = "Water parameters are approaching unsafe limits. Monitor closely.";
-        elements.statusCard.className = "glass-card p-4 mb-5 text-center bg-warning bg-opacity-10 border-warning";
+        elements.alertMessage.textContent = `High Alert: ${analysis.exceededCount} parameters out of safe bounds. ${analysis.status.recommendation}`;
+        showToast(`⚠️ ${analysis.status.label}: ${analysis.exceededCount} parameters exceeded!`, 'danger');
+        // Send email alert to admin + user
+        const adminEmail = auth.currentUser?.email || '';
+        sendCriticalEmailAlert(analysis, adminEmail);
+    } else if (analysis.exceededCount >= 1) {
         elements.alertBanner.classList.add('d-none');
+        showToast(`${analysis.status.label}: ${analysis.status.recommendation}`, 'warning');
     } else {
-        elements.statusText.textContent = "SAFE";
-        elements.statusText.className = "fw-bold my-3 text-success";
-        elements.recommendation.textContent = "All parameters are within safe limits. Water is strictly monitored.";
-        elements.statusCard.className = "glass-card p-4 mb-5 text-center bg-success bg-opacity-10 border-success";
         elements.alertBanner.classList.add('d-none');
     }
 }
@@ -400,3 +388,164 @@ function setupExportButtons() {
         }
     });
 }
+
+// ==================== CUSTOM THRESHOLDS ====================
+const THRESH_KEY = 'aquasense_thresholds';
+
+// Safe limits — LOCKED to standard safe ranges (pH 6.5–8.5, TDS <300, Turb <5, Temp <35)
+// Admins can set STRICTER limits but NEVER laxer than these standards
+const SAFE_LIMITS = {
+    'thresh-ph-min': { min: 6.5, max: 7.5, label: 'pH Min', unit: '', std: 6.5 },
+    'thresh-ph-max': { min: 7.5, max: 8.5, label: 'pH Max', unit: '', std: 8.5 },
+    'thresh-tds': { min: 50, max: 300, label: 'TDS Max', unit: ' ppm', std: 300 },
+    'thresh-turb': { min: 1, max: 5, label: 'Turbidity', unit: ' NTU', std: 5 },
+    'thresh-temp': { min: 20, max: 35, label: 'Temp Max', unit: '°C', std: 35 }
+};
+
+function loadThresholds() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(THRESH_KEY));
+        if (saved) return saved;
+    } catch { }
+    return { phMin: 6.5, phMax: 8.5, tds: 300, turbidity: 5, temperature: 35 };
+}
+
+function applyThresholdsToUI() {
+    const t = loadThresholds();
+    const el = (id) => document.getElementById(id);
+    if (el('thresh-ph-min')) el('thresh-ph-min').value = t.phMin;
+    if (el('thresh-ph-max')) el('thresh-ph-max').value = t.phMax;
+    if (el('thresh-tds')) el('thresh-tds').value = t.tds;
+    if (el('thresh-turb')) el('thresh-turb').value = t.turbidity;
+    if (el('thresh-temp')) el('thresh-temp').value = t.temperature;
+}
+
+// Real-time validation on each input
+Object.keys(SAFE_LIMITS).forEach(id => {
+    const input = document.getElementById(id);
+    if (!input) return;
+    const { min, max, label, unit } = SAFE_LIMITS[id];
+
+    // Add a warning span after input if not exists
+    let warnEl = input.parentElement.querySelector('.thresh-warn');
+    if (!warnEl) {
+        warnEl = document.createElement('small');
+        warnEl.className = 'thresh-warn d-block mt-1';
+        input.parentElement.appendChild(warnEl);
+    }
+
+    // On typing — show warning
+    input.addEventListener('input', () => {
+        const val = parseFloat(input.value);
+        if (isNaN(val) || val < min || val > max) {
+            warnEl.innerHTML = `<span style="color:#ef4444;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Must be ${min}–${max}${unit}</span>`;
+            input.style.borderColor = '#ef4444';
+            input.style.boxShadow = '0 0 0 2px rgba(239,68,68,0.25)';
+        } else {
+            warnEl.innerHTML = '';
+            input.style.borderColor = '';
+            input.style.boxShadow = '';
+        }
+    });
+
+    // On blur — auto-clamp to safe range
+    input.addEventListener('blur', () => {
+        let val = parseFloat(input.value);
+        if (isNaN(val)) val = min;
+        if (val < min) { val = min; showToast(`⚠️ ${label} locked to minimum: ${min}${unit}`, 'warning'); }
+        if (val > max) { val = max; showToast(`⚠️ ${label} locked to maximum: ${max}${unit}`, 'warning'); }
+        input.value = val;
+        warnEl.innerHTML = '';
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
+    });
+});
+
+// Save with validation
+document.getElementById('save-thresholds-btn')?.addEventListener('click', () => {
+    // Check all fields are in range
+    let hasError = false;
+    Object.keys(SAFE_LIMITS).forEach(id => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        const val = parseFloat(input.value);
+        const { min, max } = SAFE_LIMITS[id];
+        if (isNaN(val) || val < min || val > max) {
+            hasError = true;
+            input.dispatchEvent(new Event('input')); // trigger warning display
+        }
+    });
+
+    if (hasError) {
+        showToast('⚠️ Fix values in red before saving! All thresholds must be within safe limits.', 'warning');
+        return;
+    }
+
+    const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+    const t = {
+        phMin: clamp(parseFloat(document.getElementById('thresh-ph-min')?.value || '6.5'), 0, 7),
+        phMax: clamp(parseFloat(document.getElementById('thresh-ph-max')?.value || '8.5'), 7, 14),
+        tds: clamp(parseFloat(document.getElementById('thresh-tds')?.value || '300'), 50, 500),
+        turbidity: clamp(parseFloat(document.getElementById('thresh-turb')?.value || '5'), 1, 10),
+        temperature: clamp(parseFloat(document.getElementById('thresh-temp')?.value || '35'), 20, 50)
+    };
+    localStorage.setItem(THRESH_KEY, JSON.stringify(t));
+    const msg = document.getElementById('thresh-save-msg');
+    if (msg) {
+        msg.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Saved!</span>';
+        setTimeout(() => { msg.innerHTML = ''; }, 3000);
+    }
+    showToast('✅ Thresholds saved within safe limits!', 'success');
+});
+
+// Load thresholds on init
+applyThresholdsToUI();
+
+// ==================== ANALYTICS SUMMARY ====================
+function computeAnalytics(historyData) {
+    if (!historyData || historyData.length === 0) return;
+
+    const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+
+    const phArr = historyData.map(d => parseFloat(d.ph)).filter(n => !isNaN(n));
+    const tdsArr = historyData.map(d => parseFloat(d.tds)).filter(n => !isNaN(n));
+    const turbArr = historyData.map(d => parseFloat(d.turbidity)).filter(n => !isNaN(n));
+    const tempArr = historyData.map(d => parseFloat(d.temperature)).filter(n => !isNaN(n));
+
+    const avgPh = phArr.length ? avg(phArr) : 0;
+    const avgTds = tdsArr.length ? avg(tdsArr) : 0;
+    const avgTurb = turbArr.length ? avg(turbArr) : 0;
+    const avgTemp = tempArr.length ? avg(tempArr) : 0;
+
+    // Current values (last entry)
+    const last = historyData[historyData.length - 1];
+    const curPh = parseFloat(last.ph);
+    const curTds = parseFloat(last.tds);
+    const curTurb = parseFloat(last.turbidity);
+    const curTemp = parseFloat(last.temperature);
+
+    function trendIcon(cur, avgVal) {
+        if (cur > avgVal * 1.05) return '<span style="color:#ef4444;"><i class="bi bi-arrow-up-short"></i>Above avg</span>';
+        if (cur < avgVal * 0.95) return '<span style="color:#10b981;"><i class="bi bi-arrow-down-short"></i>Below avg</span>';
+        return '<span style="color:#f59e0b;"><i class="bi bi-dash"></i>Normal</span>';
+    }
+
+    const el = (id) => document.getElementById(id);
+    if (el('avg-ph')) el('avg-ph').textContent = avgPh.toFixed(1);
+    if (el('avg-tds')) el('avg-tds').textContent = avgTds.toFixed(0);
+    if (el('avg-turb')) el('avg-turb').textContent = avgTurb.toFixed(1);
+    if (el('avg-temp')) el('avg-temp').textContent = avgTemp.toFixed(1) + '°';
+
+    if (el('trend-ph')) el('trend-ph').innerHTML = trendIcon(curPh, avgPh);
+    if (el('trend-tds')) el('trend-tds').innerHTML = trendIcon(curTds, avgTds);
+    if (el('trend-turb')) el('trend-turb').innerHTML = trendIcon(curTurb, avgTurb);
+    if (el('trend-temp')) el('trend-temp').innerHTML = trendIcon(curTemp, avgTemp);
+}
+
+// Hook analytics into history listener
+onValue(query(ref(database, 'history'), limitToLast(50)), (snapshot) => {
+    if (snapshot.exists()) {
+        const data = Object.values(snapshot.val());
+        computeAnalytics(data);
+    }
+});

@@ -2,11 +2,15 @@
   "rules": {
     "current": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null",
+      ".validate": "newData.hasChildren(['ph', 'tds', 'turbidity', 'temperature'])"
     },
     "history": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null",
+      "$entry": {
+        ".validate": "newData.hasChildren(['ph', 'tds', 'turbidity', 'temperature', 'timestamp'])"
+      }
     },
     "users": {
       "$uid": {
@@ -14,6 +18,12 @@
         ".write": "auth != null && ((!data.exists() && auth.uid === $uid) || root.child('users').child(auth.uid).child('role').val() === 'admin')"
       },
       ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    },
+    "settings": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
     }
   }
 }

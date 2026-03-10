@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AquaSense</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark border-bottom glass-card rounded-0 mb-0"
+        style="border-color: var(--glass-border) !important;">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+                <i class="bi bi-droplet-half text-primary me-2 fs-3"></i>
+                AquaSense
+            </a>
+            <div class="d-flex align-items-center ms-auto gap-2">
+                <a href="#" id="back-btn" class="btn btn-outline-light btn-sm"
+                    style="border-color: var(--glass-border);">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5" style="max-width: 700px;">
+        <h2 class="fw-bold mb-4"><i class="bi bi-gear me-2 text-primary"></i>Settings</h2>
+
+        <!-- Appearance -->
+        <div class="glass-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-palette me-2"></i>Appearance</h5>
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
+                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+                <div>
+                    <span style="color: var(--text-main);">Dark Mode</span>
+                    <small class="d-block text-muted">Use dark theme (default)</small>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="theme-toggle" checked
+                        style="cursor: pointer; width: 3em; height: 1.5em;">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
+                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+                <div>
+                    <span style="color: var(--text-main);">Compact View</span>
+                    <small class="d-block text-muted">Reduce card spacing</small>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="compact-toggle"
+                        style="cursor: pointer; width: 3em; height: 1.5em;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="glass-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-bell me-2"></i>Notifications</h5>
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
+                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+                <div>
+                    <span style="color: var(--text-main);">Alert Notifications</span>
+                    <small class="d-block text-muted">Show alerts when parameters exceed limits</small>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="notif-alerts" checked
+                        style="cursor: pointer; width: 3em; height: 1.5em;">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
+                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+                <div>
+                    <span style="color: var(--text-main);">Sound Alerts</span>
+                    <small class="d-block text-muted">Play sound on danger alerts</small>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="notif-sound"
+                        style="cursor: pointer; width: 3em; height: 1.5em;">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
+                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+                <div>
+                    <span style="color: var(--text-main);">Browser Notifications</span>
+                    <small class="d-block text-muted">Get push notifications in browser</small>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="notif-push"
+                        style="cursor: pointer; width: 3em; height: 1.5em;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Preferences -->
+        <div class="glass-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-database me-2"></i>Data Preferences</h5>
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
+                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+                <div>
+                    <span style="color: var(--text-main);">Auto-Refresh</span>
+                    <small class="d-block text-muted">Auto-update dashboard data</small>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="auto-refresh" checked
+                        style="cursor: pointer; width: 3em; height: 1.5em;">
+                </div>
+            </div>
+            <div class="p-3 rounded mb-2"
+                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+                <label class="form-label mb-1" style="color: var(--text-main);">Chart Data Points</label>
+                <small class="d-block text-muted mb-2">Number of readings in history graph</small>
+                <select class="form-control" id="chart-points" style="max-width: 200px;">
+                    <option value="10">10 readings</option>
+                    <option value="20" selected>20 readings</option>
+                    <option value="50">50 readings</option>
+                    <option value="100">100 readings</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Account Actions -->
+        <div class="glass-card p-4 mb-4">
+            <h5 class="fw-bold mb-3"><i class="bi bi-person-gear me-2"></i>Account</h5>
+            <div class="d-grid gap-2">
+                <a href="profile.html" class="btn btn-outline-light" style="border-color: var(--glass-border);">
+                    <i class="bi bi-person me-2"></i>Edit Profile
+                </a>
+                <a href="about.html" class="btn btn-outline-light" style="border-color: var(--glass-border);">
+                    <i class="bi bi-info-circle me-2"></i>About AquaSense
+                </a>
+            </div>
+        </div>
+
+        <!-- Save -->
+        <button class="btn btn-primary w-100 mb-4" id="save-settings-btn">
+            <i class="bi bi-check-lg me-2"></i>Save Settings
+        </button>
+
+        <div id="save-msg" class="text-center small mb-3"></div>
+    </div>
+
+    <script type="module" src="js/settings.js"></script>
+</body>
+
+</html>
