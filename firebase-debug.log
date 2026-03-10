@@ -1,0 +1,221 @@
+[debug] [2026-03-10T05:59:55.925Z] ----------------------------------------------------------------------
+[debug] [2026-03-10T05:59:55.934Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ELCOT\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project iot-wq-monitor-2026
+[debug] [2026-03-10T05:59:55.935Z] CLI Version:   15.8.0
+[debug] [2026-03-10T05:59:55.935Z] Platform:      win32
+[debug] [2026-03-10T05:59:55.936Z] Node Version:  v25.6.1
+[debug] [2026-03-10T05:59:55.936Z] Time:          Tue Mar 10 2026 11:29:55 GMT+0530 (India Standard Time)
+[debug] [2026-03-10T05:59:55.936Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-10T05:59:58.749Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-10T05:59:58.750Z] > authorizing via signed-in user (muralidharan.v3840@gmail.com)
+[debug] [2026-03-10T05:59:58.750Z] [iam] checking project iot-wq-monitor-2026 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-10T05:59:58.751Z] Checked if tokens are valid: false, expires at: 1773122671783
+[debug] [2026-03-10T05:59:58.752Z] Checked if tokens are valid: false, expires at: 1773122671783
+[debug] [2026-03-10T05:59:58.752Z] > refreshing access token with scopes: []
+[debug] [2026-03-10T05:59:58.756Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-10T05:59:58.756Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-10T06:00:03.228Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-03-10T06:00:03.229Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-10T06:00:03.241Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions [none]
+[debug] [2026-03-10T06:00:03.241Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions  x-goog-user-project=iot-wq-monitor-2026
+[debug] [2026-03-10T06:00:03.242Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-10T06:00:18.770Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions 200
+[debug] [2026-03-10T06:00:18.771Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-10T06:00:18.771Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:18.772Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:18.772Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 [none]
+[debug] [2026-03-10T06:00:25.511Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 200
+[debug] [2026-03-10T06:00:25.511Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 {"projectId":"iot-wq-monitor-2026","projectNumber":"830608170525","displayName":"IoT Water Quality Monitor","name":"projects/iot-wq-monitor-2026","resources":{"hostingSite":"iot-wq-monitor-2026","realtimeDatabaseInstance":"iot-wq-monitor-2026-default-rtdb"},"state":"ACTIVE","etag":"1_2387d4d6-bdab-4754-bdff-2d33f3b49a16"}
+[info] 
+[info] === Deploying to 'iot-wq-monitor-2026'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-03-10T06:00:25.552Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:25.553Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:25.553Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions [none]
+[debug] [2026-03-10T06:00:25.553Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-03-10T06:00:30.633Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions 200
+[debug] [2026-03-10T06:00:30.633Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions {"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[iot-wq-monitor-2026]: beginning deploy... 
+[info] i  hosting[iot-wq-monitor-2026]: found 22 files in website 
+[debug] [2026-03-10T06:00:30.698Z] [hosting] uploading with 200 concurrency
+[debug] [2026-03-10T06:00:30.726Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:30.726Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:30.729Z] [hosting] hash cache [d2Vic2l0ZQ] stored for 22 files
+[debug] [2026-03-10T06:00:30.730Z] [hosting][hash queue][FINAL] {"max":15,"min":0,"avg":1.0909090909090908,"active":0,"complete":22,"success":22,"errored":0,"retried":0,"total":22,"elapsed":21}
+[debug] [2026-03-10T06:00:30.732Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc:populateFiles [none]
+[debug] [2026-03-10T06:00:30.732Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc:populateFiles {"files":{"/user.html":"de592d98c7ee7b4b6900514a341cb9cc5c94b0ecab1e55f66f45e883751408d3","/sw.js":"4313007efe97ddce1ed9f895ffea4803910d4ea7938681372569a7bf1e29a6a3","/settings.html":"d9e70aefd758a9bc92ee8ae3ea15dc31973a42c6c614c801b868ab71ad517d91","/profile.html":"4c60c19e71a5f62e6c6b3ea157e8087c5afd3729dd11282596f6842761ed9cac","/manifest.json":"5438301270e0ab3e8d402997cbb2ab68fff456c5a09472fb8948ef73fe57955c","/index.html":"3525139b85d280dbe1bf514dd0f928fcbebc3848e7ab1cf3a2efdf0488842a21","/admin-setup.html":"97684fd17ea4bf24a7f31d55f8f58e80db7806019c17dc1aae62563a52ccdb5d","/about.html":"584e71979e8470962f69f052bfda02556cb206c7c1908221073648e49d3bda0f","/404.html":"843dbd3b60221456ff49d5e19c35939176833260bedb5f42602006ac8dc88fc3","/js/water-intelligence.js":"62e407457aa6e6fe7226871827d77bf93a049cc60e5c59ef3ecde2658b12eb6d","/js/user.js":"a7439294263cdc108c56c7e3d704d45ed68b8c45351229357af69701864b77ba","/js/settings.js":"239551c046f592af33c1439f0006f6449b55be5d03ea31a6d644214b01a26c01","/js/profile.js":"85d1ca47ff471c2cdf1f25703982986ae54ab27522f25dc129482f2d62d743f3","/js/notifications.js":"80ad69817b79f0857a3971bdd4699f45cd4af8ca80da476c2ec06e61ec6672a5","/js/firebase-config.js":"1e7b9a5e27da7291ac15a68884d1f15f73450851bc0239c3d5bbf254c21d514e","/js/auth.js":"4d52f003288ef3646419f78263663748804098ef43bbdcf05e575c1eb3a56e66","/js/admin-setup.js":"a4f963037a60e0f7d59eef0418f37681f4c280fdafe56fe0deb3088065f18a04","/icons/icon-512.png":"baa47b49a987c8628d5af2b6c9913d998c3c936a7ed3968b3ace3b73fda4461f","/icons/icon-192.png":"baa47b49a987c8628d5af2b6c9913d998c3c936a7ed3968b3ace3b73fda4461f","/css/style.css":"a17b8750bf85179a14fce43d9c93cb54d51f7e75e4054fb7b7e877ffa40a1595","/admin.html":"3ecb1943d860eafaaa719fc64b60ac896a8c08b887a76439fc7e1ce4afda4078","/js/admin.js":"ee47b7d367a18fec1598ec47f870f77bcd39c5a329bb9d75b192a5a6e0addfe4"}}
+[debug] [2026-03-10T06:00:31.552Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc:populateFiles 200
+[debug] [2026-03-10T06:00:31.552Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc:populateFiles {"uploadRequiredHashes":["ee47b7d367a18fec1598ec47f870f77bcd39c5a329bb9d75b192a5a6e0addfe4","3ecb1943d860eafaaa719fc64b60ac896a8c08b887a76439fc7e1ce4afda4078"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files"}
+[debug] [2026-03-10T06:00:31.554Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:31.554Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:31.554Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:31.555Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:31.555Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/ee47b7d367a18fec1598ec47f870f77bcd39c5a329bb9d75b192a5a6e0addfe4 [none]
+[debug] [2026-03-10T06:00:31.555Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/ee47b7d367a18fec1598ec47f870f77bcd39c5a329bb9d75b192a5a6e0addfe4 [stream]
+[debug] [2026-03-10T06:00:31.557Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/3ecb1943d860eafaaa719fc64b60ac896a8c08b887a76439fc7e1ce4afda4078 [none]
+[debug] [2026-03-10T06:00:31.558Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/3ecb1943d860eafaaa719fc64b60ac896a8c08b887a76439fc7e1ce4afda4078 [stream]
+[debug] [2026-03-10T06:00:31.560Z] [hosting][populate queue][FINAL] {"max":829,"min":829,"avg":829,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":834}
+[debug] [2026-03-10T06:00:31.561Z] [hosting] uploads queued: 2
+[debug] [2026-03-10T06:00:34.008Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/3ecb1943d860eafaaa719fc64b60ac896a8c08b887a76439fc7e1ce4afda4078 200
+[debug] [2026-03-10T06:00:34.008Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/3ecb1943d860eafaaa719fc64b60ac896a8c08b887a76439fc7e1ce4afda4078 [stream]
+[debug] [2026-03-10T06:00:34.019Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/ee47b7d367a18fec1598ec47f870f77bcd39c5a329bb9d75b192a5a6e0addfe4 200
+[debug] [2026-03-10T06:00:34.019Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc/files/ee47b7d367a18fec1598ec47f870f77bcd39c5a329bb9d75b192a5a6e0addfe4 [stream]
+[debug] [2026-03-10T06:00:34.020Z] [hosting][upload queue][FINAL] {"max":2467,"min":2454,"avg":2460.5,"active":0,"complete":2,"success":2,"errored":0,"retried":0,"total":2,"elapsed":2467}
+[info] +  hosting[iot-wq-monitor-2026]: file upload complete 
+[debug] [2026-03-10T06:00:34.022Z] [hosting] deploy completed after 3383ms
+[debug] [2026-03-10T06:00:34.022Z] [
+  {
+    "config": {
+      "public": "website",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "site": "iot-wq-monitor-2026"
+    },
+    "version": "projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc"
+  }
+]
+[info] i  hosting[iot-wq-monitor-2026]: finalizing version... 
+[debug] [2026-03-10T06:00:34.024Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:34.024Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:34.024Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc updateMask=status%2Cconfig
+[debug] [2026-03-10T06:00:34.024Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc {"status":"FINALIZED","config":{}}
+[debug] [2026-03-10T06:00:35.134Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc 200
+[debug] [2026-03-10T06:00:35.135Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc {"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-10T06:00:22.565639Z","createUser":{"email":"muralidharan.v3840@gmail.com"},"finalizeTime":"2026-03-10T06:00:27.686304Z","finalizeUser":{"email":"muralidharan.v3840@gmail.com"}}
+[debug] [2026-03-10T06:00:35.135Z] [hosting] finalized version for iot-wq-monitor-2026:[object Object]
+[info] +  hosting[iot-wq-monitor-2026]: version finalized 
+[info] i  hosting[iot-wq-monitor-2026]: releasing new version... 
+[debug] [2026-03-10T06:00:35.136Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:35.136Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:00:35.137Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases versionName=projects%2F830608170525%2Fsites%2Fiot-wq-monitor-2026%2Fversions%2F758f5430ba1b57bc
+[debug] [2026-03-10T06:00:35.137Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases {}
+[debug] [2026-03-10T06:00:37.184Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases 200
+[debug] [2026-03-10T06:00:37.184Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases {"name":"projects/830608170525/sites/iot-wq-monitor-2026/channels/live/releases/1773122428942000","version":{"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-10T06:00:22.565639Z","createUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"},"finalizeTime":"2026-03-10T06:00:27.686304Z","finalizeUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}},"type":"DEPLOY","releaseTime":"2026-03-10T06:00:28.942Z","releaseUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}}
+[debug] [2026-03-10T06:00:37.184Z] [hosting] release: {"name":"projects/830608170525/sites/iot-wq-monitor-2026/channels/live/releases/1773122428942000","version":{"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/758f5430ba1b57bc","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-10T06:00:22.565639Z","createUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"},"finalizeTime":"2026-03-10T06:00:27.686304Z","finalizeUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}},"type":"DEPLOY","releaseTime":"2026-03-10T06:00:28.942Z","releaseUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}}
+[info] +  hosting[iot-wq-monitor-2026]: release complete 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/iot-wq-monitor-2026/overview
+[info] Hosting URL: https://iot-wq-monitor-2026.web.app
+[debug] [2026-03-10T06:00:47.245Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\ELCOT\AppData\Roaming\npm\node_modules\firebase-tools\lib\utils.js:308:49)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-03-10T06:02:12.883Z] ----------------------------------------------------------------------
+[debug] [2026-03-10T06:02:12.886Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ELCOT\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project iot-wq-monitor-2026
+[debug] [2026-03-10T06:02:12.886Z] CLI Version:   15.8.0
+[debug] [2026-03-10T06:02:12.887Z] Platform:      win32
+[debug] [2026-03-10T06:02:12.887Z] Node Version:  v25.6.1
+[debug] [2026-03-10T06:02:12.887Z] Time:          Tue Mar 10 2026 11:32:12 GMT+0530 (India Standard Time)
+[debug] [2026-03-10T06:02:12.887Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-10T06:02:15.098Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-10T06:02:15.098Z] > authorizing via signed-in user (muralidharan.v3840@gmail.com)
+[debug] [2026-03-10T06:02:15.099Z] [iam] checking project iot-wq-monitor-2026 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-10T06:02:15.100Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:02:15.100Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:02:15.101Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions [none]
+[debug] [2026-03-10T06:02:15.102Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions  x-goog-user-project=iot-wq-monitor-2026
+[debug] [2026-03-10T06:02:15.102Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-10T06:02:26.369Z] *** [apiv2] error from fetch(https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions, {"headers":{},"method":"POST","body":"{\"permissions\":[\"firebase.projects.get\",\"firebasehosting.sites.update\"]}"}): FetchError: request to https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions failed, reason: getaddrinfo ENOTFOUND cloudresourcemanager.googleapis.com
+[debug] [2026-03-10T06:02:26.369Z] [iam] error while checking permissions, command may fail: Failed to make request to https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions
+[debug] [2026-03-10T06:02:26.370Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:02:26.370Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:02:26.371Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 [none]
+[debug] [2026-03-10T06:02:26.409Z] *** [apiv2] error from fetch(https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026, {"headers":{},"method":"GET","signal":{"reason":""}}): FetchError: request to https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 failed, reason: getaddrinfo ENOTFOUND firebase.googleapis.com
+[debug] [2026-03-10T06:02:26.410Z] Failed to make request to https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 (original: request to https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 failed, reason: getaddrinfo ENOTFOUND firebase.googleapis.com)
+[error] 
+[error] Error: Assertion failed: resolving hosting target of a site with no site name or target name. This should have caused an error earlier
+[debug] [2026-03-10T06:04:38.636Z] ----------------------------------------------------------------------
+[debug] [2026-03-10T06:04:38.638Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\ELCOT\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project iot-wq-monitor-2026 --debug
+[debug] [2026-03-10T06:04:38.638Z] CLI Version:   15.8.0
+[debug] [2026-03-10T06:04:38.638Z] Platform:      win32
+[debug] [2026-03-10T06:04:38.638Z] Node Version:  v25.6.1
+[debug] [2026-03-10T06:04:38.639Z] Time:          Tue Mar 10 2026 11:34:38 GMT+0530 (India Standard Time)
+[debug] [2026-03-10T06:04:38.639Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-10T06:04:40.530Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-10T06:04:40.532Z] > authorizing via signed-in user (muralidharan.v3840@gmail.com)
+[debug] [2026-03-10T06:04:40.532Z] [iam] checking project iot-wq-monitor-2026 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-03-10T06:04:40.534Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:04:40.534Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:04:40.536Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions [none]
+[debug] [2026-03-10T06:04:40.537Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions  x-goog-user-project=iot-wq-monitor-2026
+[debug] [2026-03-10T06:04:40.537Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-10T06:04:51.504Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions 200
+[debug] [2026-03-10T06:04:51.504Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/iot-wq-monitor-2026:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-03-10T06:04:51.505Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:04:51.505Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:04:51.506Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 [none]
+[debug] [2026-03-10T06:05:02.310Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 200
+[debug] [2026-03-10T06:05:02.311Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/iot-wq-monitor-2026 {"projectId":"iot-wq-monitor-2026","projectNumber":"830608170525","displayName":"IoT Water Quality Monitor","name":"projects/iot-wq-monitor-2026","resources":{"hostingSite":"iot-wq-monitor-2026","realtimeDatabaseInstance":"iot-wq-monitor-2026-default-rtdb"},"state":"ACTIVE","etag":"1_2387d4d6-bdab-4754-bdff-2d33f3b49a16"}
+[info] 
+[info] === Deploying to 'iot-wq-monitor-2026'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-03-10T06:05:02.319Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:02.319Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:02.320Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions [none]
+[debug] [2026-03-10T06:05:02.320Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-03-10T06:05:15.213Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions 200
+[debug] [2026-03-10T06:05:15.213Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions {"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[iot-wq-monitor-2026]: beginning deploy... 
+[info] i  hosting[iot-wq-monitor-2026]: found 22 files in website 
+[debug] [2026-03-10T06:05:15.234Z] [hosting] uploading with 200 concurrency
+[debug] [2026-03-10T06:05:15.238Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:15.238Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:15.240Z] [hosting] hash cache [d2Vic2l0ZQ] stored for 22 files
+[debug] [2026-03-10T06:05:15.241Z] [hosting][hash queue][FINAL] {"max":1,"min":0,"avg":0,"active":0,"complete":22,"success":22,"errored":0,"retried":0,"total":22,"elapsed":5}
+[debug] [2026-03-10T06:05:15.241Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69:populateFiles [none]
+[debug] [2026-03-10T06:05:15.242Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69:populateFiles {"files":{"/user.html":"de592d98c7ee7b4b6900514a341cb9cc5c94b0ecab1e55f66f45e883751408d3","/sw.js":"4313007efe97ddce1ed9f895ffea4803910d4ea7938681372569a7bf1e29a6a3","/settings.html":"d9e70aefd758a9bc92ee8ae3ea15dc31973a42c6c614c801b868ab71ad517d91","/profile.html":"4c60c19e71a5f62e6c6b3ea157e8087c5afd3729dd11282596f6842761ed9cac","/manifest.json":"5438301270e0ab3e8d402997cbb2ab68fff456c5a09472fb8948ef73fe57955c","/index.html":"3525139b85d280dbe1bf514dd0f928fcbebc3848e7ab1cf3a2efdf0488842a21","/admin.html":"3ecb1943d860eafaaa719fc64b60ac896a8c08b887a76439fc7e1ce4afda4078","/admin-setup.html":"97684fd17ea4bf24a7f31d55f8f58e80db7806019c17dc1aae62563a52ccdb5d","/about.html":"584e71979e8470962f69f052bfda02556cb206c7c1908221073648e49d3bda0f","/404.html":"843dbd3b60221456ff49d5e19c35939176833260bedb5f42602006ac8dc88fc3","/js/water-intelligence.js":"62e407457aa6e6fe7226871827d77bf93a049cc60e5c59ef3ecde2658b12eb6d","/js/user.js":"a7439294263cdc108c56c7e3d704d45ed68b8c45351229357af69701864b77ba","/js/settings.js":"239551c046f592af33c1439f0006f6449b55be5d03ea31a6d644214b01a26c01","/js/profile.js":"85d1ca47ff471c2cdf1f25703982986ae54ab27522f25dc129482f2d62d743f3","/js/notifications.js":"80ad69817b79f0857a3971bdd4699f45cd4af8ca80da476c2ec06e61ec6672a5","/js/firebase-config.js":"1e7b9a5e27da7291ac15a68884d1f15f73450851bc0239c3d5bbf254c21d514e","/js/auth.js":"4d52f003288ef3646419f78263663748804098ef43bbdcf05e575c1eb3a56e66","/js/admin.js":"ee47b7d367a18fec1598ec47f870f77bcd39c5a329bb9d75b192a5a6e0addfe4","/js/admin-setup.js":"a4f963037a60e0f7d59eef0418f37681f4c280fdafe56fe0deb3088065f18a04","/icons/icon-512.png":"baa47b49a987c8628d5af2b6c9913d998c3c936a7ed3968b3ace3b73fda4461f","/icons/icon-192.png":"baa47b49a987c8628d5af2b6c9913d998c3c936a7ed3968b3ace3b73fda4461f","/css/style.css":"a17b8750bf85179a14fce43d9c93cb54d51f7e75e4054fb7b7e877ffa40a1595"}}
+[debug] [2026-03-10T06:05:16.135Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69:populateFiles 200
+[debug] [2026-03-10T06:05:16.135Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69:populateFiles {"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69/files"}
+[debug] [2026-03-10T06:05:16.136Z] [hosting][populate queue][FINAL] {"max":898,"min":898,"avg":898,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":898}
+[debug] [2026-03-10T06:05:16.136Z] [hosting] uploads queued: 0
+[debug] [2026-03-10T06:05:16.136Z] [hosting][upload queue][FINAL] {"max":0,"min":9999999999,"avg":0,"active":0,"complete":0,"success":0,"errored":0,"retried":0,"total":0,"elapsed":1773122716136}
+[info] i  hosting: upload complete 
+[info] +  hosting[iot-wq-monitor-2026]: file upload complete 
+[debug] [2026-03-10T06:05:16.136Z] [hosting] deploy completed after 919ms
+[debug] [2026-03-10T06:05:16.137Z] [
+  {
+    "config": {
+      "public": "website",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "site": "iot-wq-monitor-2026"
+    },
+    "version": "projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69"
+  }
+]
+[info] i  hosting[iot-wq-monitor-2026]: finalizing version... 
+[debug] [2026-03-10T06:05:16.138Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:16.139Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:16.139Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69 updateMask=status%2Cconfig
+[debug] [2026-03-10T06:05:16.139Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69 {"status":"FINALIZED","config":{}}
+[debug] [2026-03-10T06:05:17.160Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69 200
+[debug] [2026-03-10T06:05:17.161Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69 {"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-10T06:05:07.211989Z","createUser":{"email":"muralidharan.v3840@gmail.com"},"finalizeTime":"2026-03-10T06:05:09.729219Z","finalizeUser":{"email":"muralidharan.v3840@gmail.com"}}
+[debug] [2026-03-10T06:05:17.161Z] [hosting] finalized version for iot-wq-monitor-2026:[object Object]
+[info] +  hosting[iot-wq-monitor-2026]: version finalized 
+[info] i  hosting[iot-wq-monitor-2026]: releasing new version... 
+[debug] [2026-03-10T06:05:17.161Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:17.161Z] Checked if tokens are valid: true, expires at: 1773126002229
+[debug] [2026-03-10T06:05:17.162Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases versionName=projects%2F830608170525%2Fsites%2Fiot-wq-monitor-2026%2Fversions%2Fffa0eca402f09f69
+[debug] [2026-03-10T06:05:17.162Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases {}
+[debug] [2026-03-10T06:05:18.396Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases 200
+[debug] [2026-03-10T06:05:18.396Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/iot-wq-monitor-2026/channels/live/releases {"name":"projects/830608170525/sites/iot-wq-monitor-2026/channels/live/releases/1773122710244000","version":{"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-10T06:05:07.211989Z","createUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"},"finalizeTime":"2026-03-10T06:05:09.729219Z","finalizeUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}},"type":"DEPLOY","releaseTime":"2026-03-10T06:05:10.244Z","releaseUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}}
+[debug] [2026-03-10T06:05:18.396Z] [hosting] release: {"name":"projects/830608170525/sites/iot-wq-monitor-2026/channels/live/releases/1773122710244000","version":{"name":"projects/830608170525/sites/iot-wq-monitor-2026/versions/ffa0eca402f09f69","status":"FINALIZED","config":{},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-03-10T06:05:07.211989Z","createUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"},"finalizeTime":"2026-03-10T06:05:09.729219Z","finalizeUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}},"type":"DEPLOY","releaseTime":"2026-03-10T06:05:10.244Z","releaseUser":{"email":"muralidharan.v3840@gmail.com","imageUrl":"https://lh3.googleusercontent.com/a/ACg8ocIWz8Sn_eZz1CHgkfrK9fwAiZP44pr-Tr1gzJ5p-ZU0Mfp_Ot8"}}
+[info] +  hosting[iot-wq-monitor-2026]: release complete 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/iot-wq-monitor-2026/overview
+[info] Hosting URL: https://iot-wq-monitor-2026.web.app

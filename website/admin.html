@@ -195,22 +195,29 @@
         </div>
 
         <div class="row g-4">
-            <!-- User Approvals -->
-            <div class="col-lg-6" id="approval">
-                <div class="glass-card p-4 h-100">
-                    <h4 class="mb-4">Pending User Approvals</h4>
+            <!-- User Management -->
+            <div class="col-lg-12" id="approval">
+                <div class="glass-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-info"></i>User Management</h4>
+                        <span class="badge bg-primary" id="total-user-count">0 users</span>
+                    </div>
+                    <p class="text-muted small mb-3">Approve new users, promote to admin, or demote. Changes take effect
+                        immediately.</p>
                     <div class="table-responsive">
                         <table class="table text-white mb-0">
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Email</th>
                                     <th>Role</th>
-                                    <th>Action</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="pending-users-list">
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted">No pending users</td>
+                                    <td colspan="5" class="text-center text-muted">Loading users...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -252,33 +259,33 @@
                 </p>
                 <div class="row g-3">
                     <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">pH Min <span class="text-info">(0 - 7)</span></label>
-                        <input type="number" class="form-control" id="thresh-ph-min" value="6.5" step="0.1" min="0"
-                            max="7">
+                        <label class="form-label small text-muted">pH Min <span class="text-info">(6.5 -
+                                7.5)</span></label>
+                        <input type="number" class="form-control" id="thresh-ph-min" value="6.5" step="0.1" min="6.5"
+                            max="7.5">
                     </div>
                     <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">pH Max <span class="text-info">(7 -
-                                14)</span></label>
-                        <input type="number" class="form-control" id="thresh-ph-max" value="8.5" step="0.1" min="7"
-                            max="14">
+                        <label class="form-label small text-muted">pH Max <span class="text-info">(7.5 -
+                                8.5)</span></label>
+                        <input type="number" class="form-control" id="thresh-ph-max" value="8.5" step="0.1" min="7.5"
+                            max="8.5">
                     </div>
                     <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">TDS Max <span class="text-info">(50 - 500
+                        <label class="form-label small text-muted">TDS Max <span class="text-info">(50 - 300
                                 ppm)</span></label>
                         <input type="number" class="form-control" id="thresh-tds" value="300" step="10" min="50"
-                            max="500">
+                            max="300">
                     </div>
                     <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">Turbidity Max <span class="text-info">(1 - 10
+                        <label class="form-label small text-muted">Turbidity Max <span class="text-info">(1 - 5
                                 NTU)</span></label>
-                        <input type="number" class="form-control" id="thresh-turb" value="5" step="0.5" min="1"
-                            max="10">
+                        <input type="number" class="form-control" id="thresh-turb" value="5" step="0.5" min="1" max="5">
                     </div>
                     <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">Temp Max <span class="text-info">(20 - 50
+                        <label class="form-label small text-muted">Temp Max <span class="text-info">(20 - 35
                                 °C)</span></label>
                         <input type="number" class="form-control" id="thresh-temp" value="35" step="1" min="20"
-                            max="50">
+                            max="35">
                     </div>
                     <div class="col-md-9 col-6 d-flex align-items-end">
                         <button class="btn btn-primary" id="save-thresholds-btn">

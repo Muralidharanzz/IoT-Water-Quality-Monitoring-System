@@ -160,7 +160,7 @@ function updateDashboardUI(data) {
     if (analysis.exceededCount >= 3) {
         elements.alertBanner.classList.remove('d-none');
         elements.alertMessage.textContent = `High Alert: ${analysis.exceededCount} parameters out of safe bounds. ${analysis.status.recommendation}`;
-        showToast(`⚠️ ${analysis.status.label}: ${analysis.exceededCount} parameters exceeded!`, 'danger');
+        showToast(`âš ï¸ ${analysis.status.label}: ${analysis.exceededCount} parameters exceeded!`, 'danger');
         // Send email alert to admin + user
         const adminEmail = auth.currentUser?.email || '';
         sendCriticalEmailAlert(analysis, adminEmail);
@@ -228,61 +228,156 @@ function updateChart(dataList) {
     historyChart.update();
 }
 
-// User Approvals
+// User Management â€” All Users
+let currentAdminUid = null;
+
 function listenToPendingUsers() {
+    currentAdminUid = auth.currentUser?.uid;
     const usersRef = ref(database, 'users');
     onValue(usersRef, (snapshot) => {
         if (snapshot.exists()) {
             const usersObj = snapshot.val();
-            const pending = [];
+            const allUsers = [];
             let total = 0;
-
             for (const [uid, user] of Object.entries(usersObj)) {
                 total++;
-                if (user.role === 'user' && user.approved === false) {
-                    pending.push({ uid, ...user });
-                }
+                allUsers.push({ uid, ...user });
             }
-
             elements.totalUsers.textContent = total;
-            renderPendingUsers(pending);
+            const countEl = document.getElementById('total-user-count');
+            if (countEl) countEl.textContent = `${total} users`;
+            renderAllUsers(allUsers);
         }
     });
 }
 
-function renderPendingUsers(pendingList) {
-    if (pendingList.length === 0) {
-        elements.pendingUsers.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No pending users</td></tr>';
+function renderAllUsers(userList) {
+    if (userList.length === 0) {
+        elements.pendingUsers.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No users found</td></tr>';
         return;
     }
 
+    userList.sort((a, b) => {
+        const aPending = a.role === 'user' && a.approved === false;
+        const bPending = b.role === 'user' && b.approved === false;
+        if (aPending && !bPending) return -1;
+        if (!aPending && bPending) return 1;
+        if (a.role === 'admin' && b.role !== 'admin') return -1;
+        if (a.role !== 'admin' && b.role === 'admin') return 1;
+        return 0;
+    });
+
     elements.pendingUsers.innerHTML = '';
-    pendingList.forEach(user => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${user.name || user.email || 'User'}</td>
-            <td><span class="badge bg-secondary">User</span></td>
-            <td>
-                <button class="btn btn-sm btn-success approve-btn" data-uid="${user.uid}">
-                    <i class="bi bi-check-circle"></i> Approve
+    userList.forEach(user => {
+        const isAdmin = user.role === 'admin';
+        const isPending = user.role === 'user' && user.approved === false;
+        const isApproved = user.role === 'user' && user.approved === true;
+        const isSelf = user.uid === currentAdminUid;
+
+        const roleBadge = isAdmin
+            ? '<span class="badge bg-danger"><i class="bi bi-shield-fill me-1"></i>Admin</span>'
+            : '<span class="badge bg-secondary"><i class="bi bi-person-fill me-1"></i>User</span>';
+
+        let statusBadge = '';
+        if (isPending) statusBadge = '<span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>Pending</span>';
+        else if (isApproved) statusBadge = '<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Approved</span>';
+        else if (isAdmin) statusBadge = '<span class="badge bg-info"><i class="bi bi-star-fill me-1"></i>Active</span>';
+
+        let actions = '';
+        if (isSelf) {
+            actions = '<span class="badge bg-primary"><i class="bi bi-person-check me-1"></i>You</span>';
+        } else if (isPending) {
+            actions = `
+                <button class="btn btn-sm btn-success me-1 approve-btn" data-uid="${user.uid}" data-name="${user.name || user.email}">
+                    <i class="bi bi-check-lg"></i> Approve
                 </button>
-            </td>
+                <button class="btn btn-sm btn-outline-danger reject-btn" data-uid="${user.uid}" data-name="${user.name || user.email}">
+                    <i class="bi bi-x-lg"></i> Reject
+                </button>`;
+        } else if (isApproved) {
+            actions = `
+                <button class="btn btn-sm btn-outline-warning promote-btn" data-uid="${user.uid}" data-name="${user.name || user.email}">
+                    <i class="bi bi-arrow-up-circle"></i> Promote to Admin
+                </button>`;
+        } else if (isAdmin) {
+            actions = `
+                <button class="btn btn-sm btn-outline-secondary demote-btn" data-uid="${user.uid}" data-name="${user.name || user.email}">
+                    <i class="bi bi-arrow-down-circle"></i> Demote to User
+                </button>`;
+        }
+
+        const tr = document.createElement('tr');
+        if (isPending) tr.style.background = 'rgba(255,193,7,0.05)';
+        tr.innerHTML = `
+            <td class="fw-semibold">${user.name || 'No Name'}${isSelf ? ' <small class="text-info">(You)</small>' : ''}</td>
+            <td class="text-muted" style="font-size:0.85rem;">${user.email || '\u2014'}</td>
+            <td>${roleBadge}</td>
+            <td>${statusBadge}</td>
+            <td>${actions}</td>
         `;
         elements.pendingUsers.appendChild(tr);
     });
 
-    // Attach click listeners
+    attachUserActionListeners();
+}
+
+function attachUserActionListeners() {
     document.querySelectorAll('.approve-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
-            const uid = e.currentTarget.getAttribute('data-uid');
+            const uid = e.currentTarget.dataset.uid;
+            const name = e.currentTarget.dataset.name;
+            if (!confirm(`Approve "${name}"? They will be able to access the dashboard.`)) return;
             try {
-                const updates = {};
-                updates[`users/${uid}/approved`] = true;
-                await update(ref(database), updates);
-                alert('User approved successfully!');
-            } catch (e) {
-                console.error("Error approving user:", e);
-                alert('Failed to approve user.');
+                await update(ref(database), { [`users/${uid}/approved`]: true });
+                showToast(`\u2705 ${name} approved!`, 'success');
+            } catch (err) {
+                console.error("Error approving:", err);
+                showToast('Failed to approve user.', 'danger');
+            }
+        });
+    });
+
+    document.querySelectorAll('.reject-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const uid = e.currentTarget.dataset.uid;
+            const name = e.currentTarget.dataset.name;
+            if (!confirm(`\u26a0\ufe0f Reject and remove "${name}"? This cannot be undone.`)) return;
+            try {
+                await update(ref(database), { [`users/${uid}`]: null });
+                showToast(`\ud83d\uddd1\ufe0f ${name} rejected and removed.`, 'warning');
+            } catch (err) {
+                console.error("Error rejecting:", err);
+                showToast('Failed to reject user.', 'danger');
+            }
+        });
+    });
+
+    document.querySelectorAll('.promote-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const uid = e.currentTarget.dataset.uid;
+            const name = e.currentTarget.dataset.name;
+            if (!confirm(`\ud83d\udee1\ufe0f Promote "${name}" to ADMIN?\n\nThey will get full admin access:\n\u2022 View all sensor data\n\u2022 Approve/reject users\n\u2022 Promote/demote users\n\u2022 Configure thresholds\n\u2022 Export reports\n\nAre you sure?`)) return;
+            try {
+                await update(ref(database), { [`users/${uid}/role`]: 'admin', [`users/${uid}/approved`]: true });
+                showToast(`\ud83d\udee1\ufe0f ${name} promoted to Admin!`, 'success');
+            } catch (err) {
+                console.error("Error promoting:", err);
+                showToast('Failed to promote user.', 'danger');
+            }
+        });
+    });
+
+    document.querySelectorAll('.demote-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const uid = e.currentTarget.dataset.uid;
+            const name = e.currentTarget.dataset.name;
+            if (!confirm(`\u2b07\ufe0f Demote "${name}" to User?\n\nThey will lose all admin privileges. Are you sure?`)) return;
+            try {
+                await update(ref(database), { [`users/${uid}/role`]: 'user' });
+                showToast(`\u2b07\ufe0f ${name} demoted to User.`, 'warning');
+            } catch (err) {
+                console.error("Error demoting:", err);
+                showToast('Failed to demote user.', 'danger');
             }
         });
     });
@@ -392,14 +487,14 @@ function setupExportButtons() {
 // ==================== CUSTOM THRESHOLDS ====================
 const THRESH_KEY = 'aquasense_thresholds';
 
-// Safe limits — LOCKED to standard safe ranges (pH 6.5–8.5, TDS <300, Turb <5, Temp <35)
+// Safe limits â€” LOCKED to standard safe ranges (pH 6.5â€“8.5, TDS <300, Turb <5, Temp <35)
 // Admins can set STRICTER limits but NEVER laxer than these standards
 const SAFE_LIMITS = {
     'thresh-ph-min': { min: 6.5, max: 7.5, label: 'pH Min', unit: '', std: 6.5 },
     'thresh-ph-max': { min: 7.5, max: 8.5, label: 'pH Max', unit: '', std: 8.5 },
     'thresh-tds': { min: 50, max: 300, label: 'TDS Max', unit: ' ppm', std: 300 },
     'thresh-turb': { min: 1, max: 5, label: 'Turbidity', unit: ' NTU', std: 5 },
-    'thresh-temp': { min: 20, max: 35, label: 'Temp Max', unit: '°C', std: 35 }
+    'thresh-temp': { min: 20, max: 35, label: 'Temp Max', unit: 'Â°C', std: 35 }
 };
 
 function loadThresholds() {
@@ -434,11 +529,11 @@ Object.keys(SAFE_LIMITS).forEach(id => {
         input.parentElement.appendChild(warnEl);
     }
 
-    // On typing — show warning
+    // On typing â€” show warning
     input.addEventListener('input', () => {
         const val = parseFloat(input.value);
         if (isNaN(val) || val < min || val > max) {
-            warnEl.innerHTML = `<span style="color:#ef4444;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Must be ${min}–${max}${unit}</span>`;
+            warnEl.innerHTML = `<span style="color:#ef4444;"><i class="bi bi-exclamation-triangle-fill me-1"></i>Must be ${min}â€“${max}${unit}</span>`;
             input.style.borderColor = '#ef4444';
             input.style.boxShadow = '0 0 0 2px rgba(239,68,68,0.25)';
         } else {
@@ -448,12 +543,12 @@ Object.keys(SAFE_LIMITS).forEach(id => {
         }
     });
 
-    // On blur — auto-clamp to safe range
+    // On blur â€” auto-clamp to safe range
     input.addEventListener('blur', () => {
         let val = parseFloat(input.value);
         if (isNaN(val)) val = min;
-        if (val < min) { val = min; showToast(`⚠️ ${label} locked to minimum: ${min}${unit}`, 'warning'); }
-        if (val > max) { val = max; showToast(`⚠️ ${label} locked to maximum: ${max}${unit}`, 'warning'); }
+        if (val < min) { val = min; showToast(`âš ï¸ ${label} locked to minimum: ${min}${unit}`, 'warning'); }
+        if (val > max) { val = max; showToast(`âš ï¸ ${label} locked to maximum: ${max}${unit}`, 'warning'); }
         input.value = val;
         warnEl.innerHTML = '';
         input.style.borderColor = '';
@@ -477,17 +572,17 @@ document.getElementById('save-thresholds-btn')?.addEventListener('click', () => 
     });
 
     if (hasError) {
-        showToast('⚠️ Fix values in red before saving! All thresholds must be within safe limits.', 'warning');
+        showToast('âš ï¸ Fix values in red before saving! All thresholds must be within safe limits.', 'warning');
         return;
     }
 
     const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
     const t = {
-        phMin: clamp(parseFloat(document.getElementById('thresh-ph-min')?.value || '6.5'), 0, 7),
-        phMax: clamp(parseFloat(document.getElementById('thresh-ph-max')?.value || '8.5'), 7, 14),
-        tds: clamp(parseFloat(document.getElementById('thresh-tds')?.value || '300'), 50, 500),
-        turbidity: clamp(parseFloat(document.getElementById('thresh-turb')?.value || '5'), 1, 10),
-        temperature: clamp(parseFloat(document.getElementById('thresh-temp')?.value || '35'), 20, 50)
+        phMin: clamp(parseFloat(document.getElementById('thresh-ph-min')?.value || '6.5'), 6.5, 7.5),
+        phMax: clamp(parseFloat(document.getElementById('thresh-ph-max')?.value || '8.5'), 7.5, 8.5),
+        tds: clamp(parseFloat(document.getElementById('thresh-tds')?.value || '300'), 50, 300),
+        turbidity: clamp(parseFloat(document.getElementById('thresh-turb')?.value || '5'), 1, 5),
+        temperature: clamp(parseFloat(document.getElementById('thresh-temp')?.value || '35'), 20, 35)
     };
     localStorage.setItem(THRESH_KEY, JSON.stringify(t));
     const msg = document.getElementById('thresh-save-msg');
@@ -495,7 +590,7 @@ document.getElementById('save-thresholds-btn')?.addEventListener('click', () => 
         msg.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Saved!</span>';
         setTimeout(() => { msg.innerHTML = ''; }, 3000);
     }
-    showToast('✅ Thresholds saved within safe limits!', 'success');
+    showToast('âœ… Thresholds saved within safe limits!', 'success');
 });
 
 // Load thresholds on init
@@ -534,7 +629,7 @@ function computeAnalytics(historyData) {
     if (el('avg-ph')) el('avg-ph').textContent = avgPh.toFixed(1);
     if (el('avg-tds')) el('avg-tds').textContent = avgTds.toFixed(0);
     if (el('avg-turb')) el('avg-turb').textContent = avgTurb.toFixed(1);
-    if (el('avg-temp')) el('avg-temp').textContent = avgTemp.toFixed(1) + '°';
+    if (el('avg-temp')) el('avg-temp').textContent = avgTemp.toFixed(1) + 'Â°';
 
     if (el('trend-ph')) el('trend-ph').innerHTML = trendIcon(curPh, avgPh);
     if (el('trend-tds')) el('trend-tds').innerHTML = trendIcon(curTds, avgTds);
