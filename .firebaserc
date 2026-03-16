@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "iot-water-quality-monitoring-system"
+  },
   "targets": {},
   "etags": {}
 }

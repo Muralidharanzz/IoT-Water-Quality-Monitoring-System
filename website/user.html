@@ -85,51 +85,55 @@
     <!-- Main Content -->
     <div class="main-content">
         <!-- Header -->
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-            <div class="d-flex align-items-center gap-2">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+            <div class="d-flex align-items-center gap-3">
                 <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="bi bi-list"></i></button>
                 <div>
-                    <h2 class="fw-bold" id="user-greeting">Community Water Quality</h2>
+                    <h2 class="fw-bold mb-1" id="user-greeting">Community Water Quality</h2>
                     <p class="text-muted mb-0">Live monitoring status for your community.</p>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <div class="d-flex align-items-center glass-card py-1 px-3" style="border-radius:20px;">
-                        <i class="bi bi-geo-alt text-primary me-2"></i>
-                        <select class="form-select form-select-sm border-0 bg-transparent text-white"
-                            id="sensor-location" style="min-width:140px; cursor:pointer;">
-                            <option value="default" selected>Main Station</option>
-                            <option value="station-2">Station 2</option>
-                            <option value="station-3">Station 3</option>
-                        </select>
-                    </div>
-                    <!-- Notification Bell -->
-                    <div class="position-relative" id="notif-bell-wrap">
-                        <button class="btn btn-outline-light position-relative" id="notif-bell-btn"
-                            style="border-color: var(--glass-border); border-radius:50%; width:40px; height:40px; padding:0;">
-                            <i class="bi bi-bell fs-5"></i>
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
-                                id="notif-badge">0</span>
-                        </button>
-                        <!-- Dropdown -->
-                        <div class="glass-card p-0 d-none" id="notif-dropdown"
-                            style="position:absolute; right:0; top:48px; width:340px; max-height:400px; overflow-y:auto; z-index:999; border-radius:12px;">
-                            <div class="d-flex justify-content-between align-items-center p-3 border-bottom"
-                                style="border-color: var(--glass-border) !important;">
-                                <h6 class="mb-0 fw-bold"><i class="bi bi-bell me-2"></i>Notifications</h6>
-                                <button class="btn btn-sm text-muted" id="notif-clear-btn"
-                                    style="font-size:0.8rem;">Clear
-                                    All</button>
-                            </div>
-                            <div id="notif-list" style="max-height:340px; overflow-y:auto;">
-                                <div class="text-center text-muted p-4"><small>No notifications yet</small></div>
-                            </div>
+            </div>
+            
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <!-- Last Updated Time -->
+                <div class="glass-card py-1 px-3 d-flex align-items-center text-muted" style="border-radius:20px; font-size: 0.85rem; height: 40px;">
+                    <i class="bi bi-clock-history me-2 text-info"></i>
+                    Updated:&nbsp;<span id="last-updated" class="text-white fw-bold">--</span>
+                </div>
+
+                <!-- Sensor Dropdown -->
+                <div class="d-flex align-items-center glass-card py-1 px-3" style="border-radius:20px; height: 40px;">
+                    <i class="bi bi-geo-alt text-primary me-2"></i>
+                    <select class="form-select form-select-sm border-0 bg-transparent text-white" id="sensor-location" style="min-width:140px; cursor:pointer; box-shadow:none;">
+                        <option value="default" selected>Main Station</option>
+                        <option value="station-2">Station 2</option>
+                        <option value="station-3">Station 3</option>
+                    </select>
+                </div>
+
+                <!-- Notification Bell -->
+                <div class="position-relative" id="notif-bell-wrap">
+                    <button class="btn btn-outline-light position-relative" id="notif-bell-btn"
+                        style="border-color: var(--glass-border); border-radius:50%; width:40px; height:40px; padding:0;">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notif-badge">0</span>
+                    </button>
+                    <!-- Dropdown -->
+                    <div class="glass-card p-0 d-none" id="notif-dropdown"
+                        style="position:absolute; right:0; top:48px; width:340px; max-height:400px; overflow-y:auto; z-index:999; border-radius:12px;">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom" style="border-color: var(--glass-border) !important;">
+                            <h6 class="mb-0 fw-bold"><i class="bi bi-bell me-2"></i>Notifications</h6>
+                            <button class="btn btn-sm text-muted" id="notif-clear-btn" style="font-size:0.8rem;">Clear All</button>
+                        </div>
+                        <div id="notif-list" style="max-height:340px; overflow-y:auto;">
+                            <div class="text-center text-muted p-4"><small>No notifications yet</small></div>
                         </div>
                     </div>
-                    <span class="status-badge status-safe"><i class="bi bi-wifi"></i> Online</span>
                 </div>
-            </div>
 
+                <span class="status-badge status-safe d-flex align-items-center" style="height: 40px;"><i class="bi bi-wifi me-1"></i>Online</span>
+            </div>
+        </div>
             <!-- Alert Banner -->
             <div id="alert-banner" class="alert-banner d-none mb-4">
                 <i class="bi bi-exclamation-triangle-fill fs-4"></i>
@@ -199,129 +203,147 @@
                 </div>
             </div>
 
-            <p class="text-muted text-center mb-4"><small>Last updated: <span id="last-updated">--</span></small></p>
+                        <!-- Row 2: History & Weekly Report -->
+            <div class="row g-4 mb-5">
+                <!-- History Trends -->
+                <div class="col-xl-8 col-lg-7">
+                    <div class="glass-card p-4 h-100 d-flex flex-column" id="history">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                            <h4 class="mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>History Trends</h4>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-outline-light btn-sm" id="export-csv-btn"
+                                    style="border-color: var(--glass-border);">
+                                    <i class="bi bi-filetype-csv me-1"></i> CSV
+                                </button>
+                                <button class="btn btn-outline-light btn-sm" id="export-pdf-btn"
+                                    style="border-color: var(--glass-border);">
+                                    <i class="bi bi-filetype-pdf me-1"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Date Range Filter -->
+                        <div class="d-flex flex-wrap gap-2 mb-3 align-items-end">
+                            <div>
+                                <label class="form-label small text-muted mb-1">From</label>
+                                <input type="date" class="form-control form-control-sm" id="date-from" style="max-width:160px;">
+                            </div>
+                            <div>
+                                <label class="form-label small text-muted mb-1">To</label>
+                                <input type="date" class="form-control form-control-sm" id="date-to" style="max-width:160px;">
+                            </div>
+                            <div>
+                                <label class="form-label small text-muted mb-1">Points</label>
+                                <select class="form-control form-control-sm" id="chart-range" style="max-width:120px;">
+                                    <option value="20">Last 20</option>
+                                    <option value="50">Last 50</option>
+                                    <option value="100">Last 100</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-sm" id="filter-btn">
+                                <i class="bi bi-funnel me-1"></i> Filter
+                            </button>
+                        </div>
+                        <div class="chart-container flex-grow-1" style="min-height:300px; width: 100%;">
+                            <canvas id="userHistoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- History Graphs -->
-            <div class="glass-card p-4 mb-5" id="history">
-                <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-                    <h4 class="mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>History Trends</h4>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-outline-light btn-sm" id="export-csv-btn"
-                            style="border-color: var(--glass-border);">
-                            <i class="bi bi-filetype-csv me-1"></i> CSV
-                        </button>
-                        <button class="btn btn-outline-light btn-sm" id="export-pdf-btn"
-                            style="border-color: var(--glass-border);">
-                            <i class="bi bi-filetype-pdf me-1"></i> PDF
-                        </button>
+                <!-- Weekly Summary -->
+                <div class="col-xl-4 col-lg-5">
+                    <div id="section-report" class="glass-card p-4 h-100 d-flex flex-column">
+                        <h4 class="fw-bold mb-4"><i class="bi bi-file-earmark-bar-graph me-2 text-info"></i>Weekly Summary</h4>
+                        <div class="row g-3 flex-grow-1 align-content-center text-center">
+                            <div class="col-6">
+                                <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-center" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+                                    <div class="small text-muted mb-1">Safe Days</div>
+                                    <div class="fs-3 fw-bold" style="color:#10b981;" id="safe-days">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-center" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);">
+                                    <div class="small text-muted mb-1">Warning</div>
+                                    <div class="fs-3 fw-bold" style="color:#f59e0b;" id="warning-days">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-center" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
+                                    <div class="small text-muted mb-1">Critical</div>
+                                    <div class="fs-3 fw-bold" style="color:#ef4444;" id="critical-days">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-center" style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2);">
+                                    <div class="small text-muted mb-1">Readings</div>
+                                    <div class="fs-3 fw-bold" style="color:#0ea5e9;" id="total-readings">--</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <!-- Date Range Filter -->
-                <div class="d-flex flex-wrap gap-2 mb-3 align-items-end">
-                    <div>
-                        <label class="form-label small text-muted mb-1">From</label>
-                        <input type="date" class="form-control form-control-sm" id="date-from" style="max-width:160px;">
-                    </div>
-                    <div>
-                        <label class="form-label small text-muted mb-1">To</label>
-                        <input type="date" class="form-control form-control-sm" id="date-to" style="max-width:160px;">
-                    </div>
-                    <div>
-                        <label class="form-label small text-muted mb-1">Points</label>
-                        <select class="form-control form-control-sm" id="chart-range" style="max-width:120px;">
-                            <option value="20">Last 20</option>
-                            <option value="50">Last 50</option>
-                            <option value="100">Last 100</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary btn-sm" id="filter-btn">
-                        <i class="bi bi-funnel me-1"></i> Filter
-                    </button>
-                </div>
-                <div class="chart-container">
-                    <canvas id="userHistoryChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Live Parameters Detail -->
-            <div id="parameters" class="glass-card p-4 mb-5">
-                <h4 class="mb-4"><i class="bi bi-clipboard-data me-2 text-primary"></i>Parameter Details</h4>
-                <div class="table-responsive">
-                    <table class="table text-white mb-0">
-                        <thead>
-                            <tr>
-                                <th>Parameter</th>
-                                <th>Current Value</th>
-                                <th>Safe Range</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="param-details-body">
-                            <tr>
-                                <td><i class="bi bi-activity text-primary me-2"></i>pH Level</td>
-                                <td id="detail-ph">--</td>
-                                <td>6.5 – 8.5</td>
-                                <td><span id="detail-badge-ph" class="status-badge status-safe">--</span></td>
-                            </tr>
-                            <tr>
-                                <td><i class="bi bi-water text-info me-2"></i>TDS</td>
-                                <td id="detail-tds">--</td>
-                                <td>&lt; 300 ppm</td>
-                                <td><span id="detail-badge-tds" class="status-badge status-safe">--</span></td>
-                            </tr>
-                            <tr>
-                                <td><i class="bi bi-cloud-haze text-secondary me-2"></i>Turbidity</td>
-                                <td id="detail-turb">--</td>
-                                <td>&lt; 5 NTU</td>
-                                <td><span id="detail-badge-turb" class="status-badge status-safe">--</span></td>
-                            </tr>
-                            <tr>
-                                <td><i class="bi bi-thermometer-half text-warning me-2"></i>Temperature</td>
-                                <td id="detail-temp">--</td>
-                                <td>&lt; 35°C</td>
-                                <td><span id="detail-badge-temp" class="status-badge status-safe">--</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
-        </div>
-
-        <!-- Sensor Map -->
-        <div id="section-map" class="mb-4">
-            <h4 class="fw-bold mb-3"><i class="bi bi-geo-alt me-2 text-danger"></i>Sensor Location Map</h4>
-            <div class="glass-card p-3" style="overflow:hidden; border-radius:16px;">
-                <div id="sensor-map" style="height: 300px; border-radius: 12px; z-index: 1;"></div>
-            </div>
-        </div>
-
-        <!-- Weekly Report -->
-        <div id="section-report" class="mb-4">
-            <h4 class="fw-bold mb-3"><i class="bi bi-file-earmark-bar-graph me-2 text-info"></i>Weekly Summary</h4>
-            <div class="glass-card p-4">
-                <div class="row g-3 text-center">
-                    <div class="col-6 col-md-3">
-                        <div class="small text-muted">Safe Days</div>
-                        <div class="fs-3 fw-bold" style="color:#10b981;" id="safe-days">--</div>
+            <!-- Row 3: Parameter Details & Sensor Map -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-6">
+                    <!-- Live Parameters Detail -->
+                    <div id="parameters" class="glass-card p-4 h-100 d-flex flex-column">
+                        <h4 class="mb-4"><i class="bi bi-clipboard-data me-2 text-primary"></i>Parameter Details</h4>
+                        <div class="table-responsive flex-grow-1">
+                            <table class="table text-white mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Current Value</th>
+                                        <th>Safe Range</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="param-details-body">
+                                    <tr>
+                                        <td><i class="bi bi-activity text-primary me-2"></i>pH Level</td>
+                                        <td id="detail-ph">--</td>
+                                        <td>6.5 - 8.5</td>
+                                        <td><span id="detail-badge-ph" class="status-badge status-safe">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="bi bi-water text-info me-2"></i>TDS</td>
+                                        <td id="detail-tds">--</td>
+                                        <td>&lt; 300 ppm</td>
+                                        <td><span id="detail-badge-tds" class="status-badge status-safe">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="bi bi-cloud-haze text-secondary me-2"></i>Turbidity</td>
+                                        <td id="detail-turb">--</td>
+                                        <td>&lt; 5 NTU</td>
+                                        <td><span id="detail-badge-turb" class="status-badge status-safe">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="bi bi-thermometer-half text-warning me-2"></i>Temperature</td>
+                                        <td id="detail-temp">--</td>
+                                        <td>&lt; 35°C</td>
+                                        <td><span id="detail-badge-temp" class="status-badge status-safe">--</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <div class="small text-muted">Warning Days</div>
-                        <div class="fs-3 fw-bold" style="color:#f59e0b;" id="warning-days">--</div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="small text-muted">Critical Days</div>
-                        <div class="fs-3 fw-bold" style="color:#ef4444;" id="critical-days">--</div>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <div class="small text-muted">Total Readings</div>
-                        <div class="fs-3 fw-bold" style="color:#0ea5e9;" id="total-readings">--</div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <!-- Sensor Map -->
+                    <div id="section-map" class="glass-card p-0 h-100 d-flex flex-column" style="overflow:hidden; border-radius:16px;">
+                        <div class="p-4 pb-0">
+                            <h4 class="fw-bold mb-3"><i class="bi bi-geo-alt me-2 text-danger"></i>Sensor Location Map</h4>
+                        </div>
+                        <div id="sensor-map" style="flex-grow:1; min-height: 300px; z-index: 1;"></div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div><!-- End main-content -->
+
+    </div><!-- End container-fluid -->
 
     <!-- Mobile Bottom Nav -->
     <nav class="mobile-bottom-nav">

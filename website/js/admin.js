@@ -26,8 +26,8 @@ const elements = {
 // Global Chart Instance
 let historyChart;
 
-// Thresholds
-const PARAM_RANGES = {
+// Thresholds (admin-level safe limits for evaluation)
+const SAFE_LIMITS = {
     ph: { min: 6.5, max: 8.5 },
     tds: { max: 300 },
     turb: { max: 5 },
@@ -489,7 +489,7 @@ const THRESH_KEY = 'aquasense_thresholds';
 
 // Safe limits â€” LOCKED to standard safe ranges (pH 6.5â€“8.5, TDS <300, Turb <5, Temp <35)
 // Admins can set STRICTER limits but NEVER laxer than these standards
-const SAFE_LIMITS = {
+const THRESH_INPUT_LIMITS = {
     'thresh-ph-min': { min: 6.5, max: 7.5, label: 'pH Min', unit: '', std: 6.5 },
     'thresh-ph-max': { min: 7.5, max: 8.5, label: 'pH Max', unit: '', std: 8.5 },
     'thresh-tds': { min: 50, max: 300, label: 'TDS Max', unit: ' ppm', std: 300 },
@@ -516,10 +516,10 @@ function applyThresholdsToUI() {
 }
 
 // Real-time validation on each input
-Object.keys(SAFE_LIMITS).forEach(id => {
+Object.keys(THRESH_INPUT_LIMITS).forEach(id => {
     const input = document.getElementById(id);
     if (!input) return;
-    const { min, max, label, unit } = SAFE_LIMITS[id];
+    const { min, max, label, unit } = THRESH_INPUT_LIMITS[id];
 
     // Add a warning span after input if not exists
     let warnEl = input.parentElement.querySelector('.thresh-warn');
@@ -560,11 +560,11 @@ Object.keys(SAFE_LIMITS).forEach(id => {
 document.getElementById('save-thresholds-btn')?.addEventListener('click', () => {
     // Check all fields are in range
     let hasError = false;
-    Object.keys(SAFE_LIMITS).forEach(id => {
+    Object.keys(THRESH_INPUT_LIMITS).forEach(id => {
         const input = document.getElementById(id);
         if (!input) return;
         const val = parseFloat(input.value);
-        const { min, max } = SAFE_LIMITS[id];
+        const { min, max } = THRESH_INPUT_LIMITS[id];
         if (isNaN(val) || val < min || val > max) {
             hasError = true;
             input.dispatchEvent(new Event('input')); // trigger warning display
