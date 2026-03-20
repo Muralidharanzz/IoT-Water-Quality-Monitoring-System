@@ -131,11 +131,12 @@ function listenToLiveData() {
 }
 
 function updateDashboardUI(data) {
-    // Update Values
-    elements.phVal.textContent = data.ph;
-    elements.tdsVal.textContent = data.tds;
-    elements.turbVal.textContent = data.turbidity;
-    elements.tempVal.textContent = data.temperature;
+    // Update Values (rounded to 2 decimal places)
+    const fmt = (v) => parseFloat(v).toFixed(2);
+    elements.phVal.textContent = fmt(data.ph);
+    elements.tdsVal.textContent = fmt(data.tds);
+    elements.turbVal.textContent = fmt(data.turbidity);
+    elements.tempVal.textContent = fmt(data.temperature);
 
     // Format timestamp
     let ts = data.timestamp;
@@ -157,10 +158,10 @@ function updateDashboardUI(data) {
 
     // Update Detail Table
     if (elements.detailPh) {
-        elements.detailPh.textContent = data.ph;
-        elements.detailTds.textContent = data.tds + ' ppm';
-        elements.detailTurb.textContent = data.turbidity + ' NTU';
-        elements.detailTemp.textContent = data.temperature + '°C';
+        elements.detailPh.textContent = fmt(data.ph);
+        elements.detailTds.textContent = fmt(data.tds) + ' ppm';
+        elements.detailTurb.textContent = fmt(data.turbidity) + ' NTU';
+        elements.detailTemp.textContent = fmt(data.temperature) + '°C';
         updateBadge(elements.detailBadgePh, phStatus);
         updateBadge(elements.detailBadgeTds, tdsStatus);
         updateBadge(elements.detailBadgeTurb, turbStatus);

@@ -134,11 +134,12 @@ function listenToLiveData() {
 }
 
 function updateDashboardUI(data) {
-    // Update Values
-    elements.phVal.textContent = data.ph;
-    elements.tdsVal.textContent = data.tds;
-    elements.turbVal.textContent = data.turbidity;
-    elements.tempVal.textContent = data.temperature;
+    // Update Values (rounded to 2 decimal places)
+    const fmt = (v) => parseFloat(v).toFixed(2);
+    elements.phVal.textContent = fmt(data.ph);
+    elements.tdsVal.textContent = fmt(data.tds);
+    elements.turbVal.textContent = fmt(data.turbidity);
+    elements.tempVal.textContent = fmt(data.temperature);
 
     // Evaluate
     const phStatus = evaluateParameter(data.ph, 'ph');
