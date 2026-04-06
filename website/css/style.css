@@ -16,30 +16,70 @@
   --glass-border: rgba(255, 255, 255, 0.12);
 }
 
+html {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  min-height: 100%;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  background: transparent;
   color: var(--text-main);
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Animated ambient background glow */
+body::before {
+  content: '';
+  position: fixed;
+  top: -30%;
+  left: -20%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(14,165,233,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientPulse 8s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientPulse 10s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes ambientPulse {
+  from { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  to { transform: scale(1.15) translate(5%, 3%); opacity: 1; }
 }
 
 /* Glassmorphism Classes */
 .glass-card {
   background: var(--dark-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .glass-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(14,165,233,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 /* Auth Container */
@@ -156,6 +196,13 @@ body {
   font-size: 2.5rem;
   font-weight: 700;
   margin: 10px 0;
+  background: linear-gradient(135deg, #e2e8f0 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  filter: drop-shadow(0 0 8px rgba(14,165,233,0.25));
 }
 
 .status-badge {
@@ -636,10 +683,29 @@ body {
   --glass-border: rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] body,
-body[data-theme="light"] {
+/* Light mode: override html background (the root layer) */
+html[data-theme="light"] {
   background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #ede9fe 100%);
+}
+
+[data-theme="light"] body {
   color: var(--text-main);
+}
+
+[data-theme="light"] body::before {
+  background: radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%);
+}
+
+[data-theme="light"] body::after {
+  background: radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%);
+}
+
+[data-theme="light"] .data-value {
+  background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(2,132,199,0.2));
 }
 
 [data-theme="light"] .glass-card,
@@ -806,7 +872,31 @@ body[data-theme="light"] {
 }
 
 /* Smooth theme transition */
-body, .glass-card, .sidebar, .form-control, .btn-outline-light,
+html, body, .glass-card, .sidebar, .form-control, .btn-outline-light,
 .sidebar-link, .alert-banner, .mobile-bottom-nav {
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background 0.4s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ==================== ENHANCED SENSOR CARDS ==================== */
+/* Accent top-border glow per parameter */
+.glass-card.sensor-ph    { border-top: 2px solid rgba(14,165,233,0.6); }
+.glass-card.sensor-tds   { border-top: 2px solid rgba(139,92,246,0.6); }
+.glass-card.sensor-turb  { border-top: 2px solid rgba(99,102,241,0.6); }
+.glass-card.sensor-temp  { border-top: 2px solid rgba(245,158,11,0.6); }
+
+/* Subtle shimmer on data load */
+@keyframes shimmerIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.data-value { animation: shimmerIn 0.5s ease-out; }
+
+/* Disease card — critical pulse */
+.wq-disease-card[style*="dc2626"] {
+  animation: pulseSevere 2s ease-in-out infinite;
+}
+
+/* Neon sidebar active — stronger glow */
+.sidebar-link.active {
+  box-shadow: inset 3px 0 0 var(--primary), 0 0 16px rgba(14,165,233,0.12);
 }

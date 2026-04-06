@@ -69,6 +69,11 @@ export function analyzeWaterQuality(data) {
         if (exceeded.tds && exceeded.turbidity && exceeded.ph) {
             diseases.push({ name: 'Gastroenteritis', icon: 'bi-heart-pulse-fill', severity: 'High', color: '#f97316' });
         }
+        // High turbidity + high TDS + pH imbalance → Hepatitis A
+        // HAV hides in suspended particles (high turbidity) + fecal contamination (high TDS + pH imbalance)
+        if (exceeded.turbidity && exceeded.tds && exceeded.ph) {
+            diseases.push({ name: 'Hepatitis A', icon: 'bi-lungs-fill', severity: 'Critical', color: '#dc2626' });
+        }
         // High turbidity + high TDS + high temperature → Diarrhea
         if (exceeded.turbidity && exceeded.tds && exceeded.temperature) {
             diseases.push({ name: 'Diarrhea', icon: 'bi-droplet-fill', severity: 'Moderate', color: '#f59e0b' });
