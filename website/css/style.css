@@ -835,6 +835,32 @@ html[data-theme="light"] {
   .mobile-bottom-nav {
     display: block;
   }
+
+  /* Push main content above bottom nav */
+  .main-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Sidebar slides in from left on mobile */
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    height: 100%;
+    width: 260px;
+    z-index: 1000;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+  }
+  .sidebar.active {
+    left: 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+  }
+
+  /* Hide the old fixed top-left toggle if it exists */
+  #sidebar-toggle {
+    display: none !important;
+  }
 }
 
 /* Mobile sidebar overlay */
