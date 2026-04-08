@@ -139,55 +139,60 @@
         <!-- Disease Prediction -->
         <div class="glass-card p-4 mb-4">
             <h4 class="fw-bold mb-3"><i class="bi bi-virus text-danger me-2"></i>Disease Prediction</h4>
-            <p style="color: #cbd5e1;">When 3 or more parameters exceed safe limits, the system predicts potential
-                waterborne diseases:</p>
-            <div class="row g-3">
-                <div class="col-md-4 col-6">
-                    <div class="wq-disease-card" style="--disease-color: #ef4444;">
-                        <div class="wq-disease-icon"><i class="bi bi-bug-fill"></i></div>
-                        <div class="wq-disease-info">
-                            <h6>Cholera</h6><span class="wq-disease-severity" style="color: #ef4444">Critical</span>
+            <p style="color: #cbd5e1;">When 3 or more parameters exceed safe limits, the system predicts potential waterborne diseases. <small style="color:var(--primary);">Tap any disease for details ›</small></p>
+            <div class="row g-3" id="about-disease-grid">
+                <!-- Data for educational preview — matched with dynamic dashboard logic -->
+                <div class="col-xl-4 col-md-6">
+                    <div class="wq-disease-card h-100" style="--disease-color: #ef4444;" data-disease="Cholera" role="button" tabindex="0">
+                        <div class="wq-disease-icon" style="pointer-events:none;"><i class="bi bi-bug-fill"></i></div>
+                        <div class="wq-disease-info" style="pointer-events:none;">
+                            <h6>Cholera</h6>
+                            <span class="wq-disease-severity" style="color: #ef4444">Critical Risk</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-6">
-                    <div class="wq-disease-card" style="--disease-color: #f97316;">
-                        <div class="wq-disease-icon"><i class="bi bi-virus"></i></div>
-                        <div class="wq-disease-info">
-                            <h6>Typhoid</h6><span class="wq-disease-severity" style="color: #f97316">High</span>
+                <div class="col-xl-4 col-md-6">
+                    <div class="wq-disease-card h-100" style="--disease-color: #f97316;" data-disease="Typhoid" role="button" tabindex="0">
+                        <div class="wq-disease-icon" style="pointer-events:none;"><i class="bi bi-virus"></i></div>
+                        <div class="wq-disease-info" style="pointer-events:none;">
+                            <h6>Typhoid</h6>
+                            <span class="wq-disease-severity" style="color: #f97316">High Risk</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-6">
-                    <div class="wq-disease-card" style="--disease-color: #f97316;">
-                        <div class="wq-disease-icon"><i class="bi bi-heart-pulse-fill"></i></div>
-                        <div class="wq-disease-info">
-                            <h6>Gastroenteritis</h6><span class="wq-disease-severity" style="color: #f97316">High</span>
+                <div class="col-xl-4 col-md-6">
+                    <div class="wq-disease-card h-100" style="--disease-color: #f97316;" data-disease="Gastroenteritis" role="button" tabindex="0">
+                        <div class="wq-disease-icon" style="pointer-events:none;"><i class="bi bi-heart-pulse-fill"></i></div>
+                        <div class="wq-disease-info" style="pointer-events:none;">
+                            <h6>Gastroenteritis</h6>
+                            <span class="wq-disease-severity" style="color: #f97316">High Risk</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-6">
-                    <div class="wq-disease-card" style="--disease-color: #f59e0b;">
-                        <div class="wq-disease-icon"><i class="bi bi-droplet-fill"></i></div>
-                        <div class="wq-disease-info">
-                            <h6>Diarrhea</h6><span class="wq-disease-severity" style="color: #f59e0b">Moderate</span>
+                <div class="col-xl-4 col-md-6">
+                    <div class="wq-disease-card h-100" style="--disease-color: #dc2626;" data-disease="Hepatitis A" role="button" tabindex="0">
+                        <div class="wq-disease-icon" style="pointer-events:none;"><i class="bi bi-lungs-fill"></i></div>
+                        <div class="wq-disease-info" style="pointer-events:none;">
+                            <h6>Hepatitis A</h6>
+                            <span class="wq-disease-severity" style="color: #dc2626">Critical Risk</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-6">
-                    <div class="wq-disease-card" style="--disease-color: #f59e0b;">
-                        <div class="wq-disease-icon"><i class="bi bi-bandaid-fill"></i></div>
-                        <div class="wq-disease-info">
-                            <h6>Skin Irritation</h6><span class="wq-disease-severity"
-                                style="color: #f59e0b">Moderate</span>
+                <div class="col-xl-4 col-md-6">
+                    <div class="wq-disease-card h-100" style="--disease-color: #f59e0b;" data-disease="Diarrhea" role="button" tabindex="0">
+                        <div class="wq-disease-icon" style="pointer-events:none;"><i class="bi bi-droplet-fill"></i></div>
+                        <div class="wq-disease-info" style="pointer-events:none;">
+                            <h6>Diarrhea</h6>
+                            <span class="wq-disease-severity" style="color: #f59e0b">Moderate Risk</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-6">
-                    <div class="wq-disease-card" style="--disease-color: #dc2626;">
-                        <div class="wq-disease-icon"><i class="bi bi-lungs-fill"></i></div>
-                        <div class="wq-disease-info">
-                            <h6>Hepatitis A</h6><span class="wq-disease-severity" style="color: #dc2626">Critical</span>
+                <div class="col-xl-4 col-md-6">
+                    <div class="wq-disease-card h-100" style="--disease-color: #f59e0b;" data-disease="Skin Irritation" role="button" tabindex="0">
+                        <div class="wq-disease-icon" style="pointer-events:none;"><i class="bi bi-bandaid-fill"></i></div>
+                        <div class="wq-disease-info" style="pointer-events:none;">
+                            <h6>Skin Irritation</h6>
+                            <span class="wq-disease-severity" style="color: #f59e0b">Moderate Risk</span>
                         </div>
                     </div>
                 </div>
@@ -282,6 +287,27 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { openDiseaseModal } from './js/water-intelligence.js';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('about-disease-grid');
+            if (grid) {
+                grid.addEventListener('click', (e) => {
+                    const card = e.target.closest('.wq-disease-card');
+                    if (card && card.dataset.disease) {
+                        openDiseaseModal(card.dataset.disease);
+                    }
+                });
+                grid.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        const card = e.target.closest('.wq-disease-card');
+                        if (card && card.dataset.disease) openDiseaseModal(card.dataset.disease);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

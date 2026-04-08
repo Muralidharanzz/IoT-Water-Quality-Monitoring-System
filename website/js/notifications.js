@@ -342,7 +342,7 @@ export async function sendCriticalEmailAlert(analysis, userEmail) {
         exceeded_params: exceededList,
         diseases: diseaseList,
         recommendation: analysis.status.recommendation,
-        timestamp: new Date().toLocaleString(),
+        timestamp: new Date().toLocaleString('en-IN'),
         subject: `🚨 AquaSense CRITICAL: ${analysis.status.label} - ${analysis.exceededCount}/4 Parameters Exceeded`
     };
 

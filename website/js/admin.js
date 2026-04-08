@@ -1,5 +1,5 @@
 import { database, auth } from './firebase-config.js';
-import { ref, onValue, get, update, query, limitToLast, orderByChild } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+import { ref, onValue, get, update, query, limitToLast, orderByChild, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 import { analyzeWaterQuality, renderIntelligenceUI } from './water-intelligence.js';
 import { showToast, sendCriticalEmailAlert } from './notifications.js';
@@ -20,11 +20,29 @@ const elements = {
     totalUsers: document.getElementById('stat-total-users'),
     totalRecords: document.getElementById('stat-total-records'),
     adminName: document.getElementById('admin-name'),
-    historyChartCanvas: document.getElementById('historyChart')
+    adminGreeting: document.getElementById('admin-greeting'),
+    lastUpdated: document.getElementById('last-updated'),
+    historyChartCanvas: document.getElementById('historyChart'),
+    viewDashboard: document.getElementById('view-dashboard'),
+    viewAuthLogs: document.getElementById('view-authlogs'),
+    authLogsTableBody: document.getElementById('auth-logs-table-body'),
+    
+    // New stats elements
+    statAdminCount: document.getElementById('stat-admin-count'),
+    statVerifiedCount: document.getElementById('stat-verified-count'),
+    statPendingCount: document.getElementById('stat-pending-count'),
+    statTotalUsers: document.getElementById('stat-total-users'),
+    
+    // Weekly summary elements
+    safeDays: document.getElementById('safe-days'),
+    warningDays: document.getElementById('warning-days'),
+    criticalDays: document.getElementById('critical-days'),
+    totalReadings: document.getElementById('total-readings')
 };
 
 // Global Chart Instance
 let historyChart;
+let currentUserDoc = null;
 
 // Thresholds (admin-level safe limits for evaluation)
 const SAFE_LIMITS = {
@@ -47,18 +65,41 @@ onAuthStateChanged(auth, async (user) => {
 
     if (snapshot.exists()) {
         const userData = snapshot.val();
+        currentUserDoc = userData;
         if (userData.role !== 'admin') {
             window.location.href = 'index.html'; // Kick unauthorized
         } else {
-            elements.adminName.textContent = userData.name || 'Admin User';
+            const displayName = userData.name || 'Admin User';
+            if(elements.adminName) elements.adminName.textContent = displayName;
+            if(elements.adminGreeting) elements.adminGreeting.textContent = `Welcome, ${displayName}`;
             initAdminDashboard();
         }
     }
 });
 
 // Logout
-document.getElementById('logout-btn').addEventListener('click', () => {
-    signOut(auth).then(() => window.location.href = 'index.html');
+document.getElementById('logout-btn').addEventListener('click', async () => {
+    try {
+        const user = auth.currentUser;
+        if (user && currentUserDoc) {
+            try {
+                await push(ref(database, 'auth_logs'), {
+                    email: user.email,
+                    name: currentUserDoc.name || 'Admin',
+                    role: currentUserDoc.role || 'admin',
+                    action: 'Logout',
+                    timestamp: Date.now()
+                });
+            } catch (logError) {
+                console.error("Logout logging failed:", logError);
+            }
+        }
+    } catch (error) {
+        console.error("Logout error:", error);
+    } finally {
+        await signOut(auth);
+        window.location.href = 'index.html';
+    }
 });
 
 // Mobile Sidebar Toggle
@@ -77,6 +118,33 @@ if (sidebarToggle) {
     });
 }
 
+// Setup Tab Switching and Live Clock
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const hash = this.getAttribute('href');
+        if (hash === '#auth-logs') {
+            e.preventDefault();
+            if(elements.viewDashboard) elements.viewDashboard.classList.add('d-none');
+            if(elements.viewAuthLogs) elements.viewAuthLogs.classList.remove('d-none');
+        } else {
+            if(elements.viewDashboard && elements.viewDashboard.classList.contains('d-none')) {
+                elements.viewDashboard.classList.remove('d-none');
+                if(elements.viewAuthLogs) elements.viewAuthLogs.classList.add('d-none');
+            }
+        }
+    });
+});
+
+function initClock() {
+    if(!elements.lastUpdated) return;
+    setInterval(() => {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateStr = now.toLocaleDateString('en-IN');
+        elements.lastUpdated.textContent = `${dateStr} ${timeStr}`;
+    }, 1000);
+}
+
 // Initialization Function
 function initAdminDashboard() {
     initChart();
@@ -84,6 +152,56 @@ function initAdminDashboard() {
     listenToPendingUsers();
     listenToStats();
     setupExportButtons();
+    listenToAuthLogs();
+    initClock();
+}
+
+function listenToAuthLogs() {
+    if(!elements.authLogsTableBody) return;
+    
+    const logsRef = query(ref(database, 'auth_logs'), limitToLast(50));
+    onValue(logsRef, (snapshot) => {
+        if (!elements.authLogsTableBody) return;
+        elements.authLogsTableBody.innerHTML = '';
+        
+        if (snapshot.exists()) {
+            const logsObj = snapshot.val();
+            // Convert to array and handle potential missing timestamps
+            const logsList = Object.entries(logsObj).map(([id, log]) => ({
+                id,
+                ...log,
+                timestamp: log.timestamp || Date.now() 
+            })).sort((a,b) => b.timestamp - a.timestamp);
+            
+            if(logsList.length === 0) {
+                elements.authLogsTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No logs recorded yet.</td></tr>`;
+                return;
+            }
+
+            logsList.forEach(log => {
+                const tr = document.createElement('tr');
+                const badgeClass = log.action === 'Login' ? 'bg-success' : 'bg-secondary';
+                const timeStr = new Date(log.timestamp).toLocaleString('en-IN', {
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4">${timeStr}</td>
+                    <td class="py-3 px-4 fw-bold text-white">${log.name || 'Unknown'}</td>
+                    <td class="py-3 px-4 text-muted">${log.email}</td>
+                    <td class="py-3 px-4"><span class="badge border border-secondary text-secondary" style="background:transparent;">${log.role}</span></td>
+                    <td class="py-3 px-4 text-center"><span class="badge ${badgeClass}">${log.action}</span></td>
+                `;
+                elements.authLogsTableBody.appendChild(tr);
+            });
+        } else {
+            elements.authLogsTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No records found.</td></tr>`;
+        }
+    }, (error) => {
+        console.error("Auth logs error:", error);
+        if(elements.authLogsTableBody) elements.authLogsTableBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Error loading logs: ${error.message}</td></tr>`;
+    });
 }
 
 // Logic to evaluate safety
@@ -110,42 +228,96 @@ function evaluateParameter(val, type) {
     }
 }
 
+let connectionInterval;
+let lastDataTimestamp = 0;
+
+function updateConnectionStatus(timestamp) {
+    const connStatusEl = document.getElementById('connection-status');
+    if (!connStatusEl) return;
+    
+    let ts = timestamp;
+    if (!isNaN(Number(ts))) {
+        ts = Number(ts);
+        if (ts > 1e11) ts = ts / 1000;
+    }
+    
+    const currentSeconds = Date.now() / 1000;
+    const isOnline = (currentSeconds - ts) < 120;
+    
+    if (isOnline) {
+        connStatusEl.className = 'status-badge status-safe online-badge d-flex align-items-center';
+        connStatusEl.innerHTML = '<i class="bi bi-wifi me-1"></i>Online';
+    } else {
+        connStatusEl.className = 'status-badge status-danger online-badge d-flex align-items-center opacity-75';
+        connStatusEl.innerHTML = '<i class="bi bi-wifi-off me-1"></i>Offline';
+    }
+}
+
 // Listen to Latest Sensor Data
 function listenToLiveData() {
     const latestRef = ref(database, 'current');
     onValue(latestRef, (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.val();
+            lastDataTimestamp = data.timestamp || (Date.now() / 1000);
             updateDashboardUI(data);
+            updateConnectionStatus(lastDataTimestamp);
         }
     });
 
-    // Listen for History for Chart
-    const historyRef = query(ref(database, 'history'), limitToLast(20));
+    clearInterval(connectionInterval);
+    connectionInterval = setInterval(() => {
+        if (lastDataTimestamp > 0) {
+            updateConnectionStatus(lastDataTimestamp);
+        }
+    }, 10000);
+
+    // Listen for History for Chart & Weekly Summary
+    const historyRef = query(ref(database, 'history'), limitToLast(100)); // Fetch more for weekly summary
     onValue(historyRef, (snapshot) => {
         if (snapshot.exists()) {
             const dataObj = snapshot.val();
-            // Convert to array and sort by time
-            const dataList = Object.values(dataObj).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-            updateChart(dataList);
-            elements.totalRecords.textContent = Object.keys(dataObj).length + "+"; // Approximate
+            const dataList = Object.values(dataObj).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+            
+            updateChart(dataList.slice(-20)); // Keep chart to last 20
+            computeWeeklySummary(dataList);
+            elements.totalRecords.textContent = Object.keys(dataObj).length + " records";
         }
     });
 }
 
 function updateDashboardUI(data) {
+    if (!data) return;
+
+    // Apply any calibration offsets if they exist (Manual entry for now)
+    const phOffset = parseFloat(document.getElementById('cal-ph-offset')?.value) || 0;
+    const tdsFactor = parseFloat(document.getElementById('cal-tds-factor')?.value) || 1;
+
+    const ph = parseFloat(data.ph) + phOffset;
+    const tds = parseFloat(data.tds) * tdsFactor;
+    const turb = parseFloat(data.turbidity);
+    const temp = parseFloat(data.temperature);
+    
+    // Format timestamp
+    if (elements.lastUpdated) {
+        let ts = data.timestamp;
+        if (!isNaN(Number(ts))) ts = Number(ts) * 1000;
+        const date = new Date(ts);
+        elements.lastUpdated.textContent = date.toLocaleString('en-IN');
+    }
+
     // Update Values (rounded to 2 decimal places)
     const fmt = (v) => parseFloat(v).toFixed(2);
-    elements.phVal.textContent = fmt(data.ph);
-    elements.tdsVal.textContent = fmt(data.tds);
-    elements.turbVal.textContent = fmt(data.turbidity);
-    elements.tempVal.textContent = fmt(data.temperature);
+    elements.phVal.textContent = fmt(ph);
+    elements.tdsVal.textContent = Math.round(tds);
+    elements.turbVal.textContent = fmt(turb);
+    elements.tempVal.textContent = fmt(temp);
 
     // Evaluate
-    const phStatus = evaluateParameter(data.ph, 'ph');
-    const tdsStatus = evaluateParameter(data.tds, 'tds');
-    const turbStatus = evaluateParameter(data.turbidity, 'turb');
-    const tempStatus = evaluateParameter(data.temperature, 'temp');
+    const phStatus = evaluateParameter(ph, 'ph');
+    const tdsStatus = evaluateParameter(tds, 'tds');
+    const turbStatus = evaluateParameter(turb, 'turb');
+    const tempStatus = evaluateParameter(temp, 'temp');
 
     // Update Badges
     updateBadge(elements.phBadge, phStatus);
@@ -154,15 +326,16 @@ function updateDashboardUI(data) {
     updateBadge(elements.tempBadge, tempStatus);
 
     // Water Intelligence - analyze and render
-    const analysis = analyzeWaterQuality(data);
+    const analysis = analyzeWaterQuality({ ph, tds, turbidity: turb, temperature: temp });
     renderIntelligenceUI(analysis);
 
     // Alert banner + toast + email
     if (analysis.exceededCount >= 3) {
         elements.alertBanner.classList.remove('d-none');
         elements.alertMessage.textContent = `High Alert: ${analysis.exceededCount} parameters out of safe bounds. ${analysis.status.recommendation}`;
-        showToast(`âš ï¸ ${analysis.status.label}: ${analysis.exceededCount} parameters exceeded!`, 'danger');
-        // Send email alert to admin + user
+        showToast(`⚠️ ${analysis.status.label}: ${analysis.exceededCount} parameters exceeded!`, 'danger');
+        
+        // Send email alert to admin
         const adminEmail = auth.currentUser?.email || '';
         sendCriticalEmailAlert(analysis, adminEmail);
     } else if (analysis.exceededCount >= 1) {
@@ -240,13 +413,27 @@ function listenToPendingUsers() {
             const usersObj = snapshot.val();
             const allUsers = [];
             let total = 0;
+            let admins = 0;
+            let verified = 0;
+            let pending = 0;
+
             for (const [uid, user] of Object.entries(usersObj)) {
                 total++;
+                if (user.role === 'admin') admins++;
+                else if (user.approved === true) verified++;
+                else if (user.approved === false) pending++;
+                
                 allUsers.push({ uid, ...user });
             }
-            elements.totalUsers.textContent = total;
+
+            if(elements.statTotalUsers) elements.statTotalUsers.textContent = total;
+            if(elements.statAdminCount) elements.statAdminCount.textContent = admins;
+            if(elements.statVerifiedCount) elements.statVerifiedCount.textContent = verified;
+            if(elements.statPendingCount) elements.statPendingCount.textContent = pending;
+
             const countEl = document.getElementById('total-user-count');
             if (countEl) countEl.textContent = `${total} users`;
+            
             renderAllUsers(allUsers);
         }
     });
@@ -408,7 +595,7 @@ function setupExportButtons() {
 
                 let ts = row.timestamp;
                 if (!isNaN(Number(ts))) ts = Number(ts) * 1000;
-                const formattedTime = new Date(ts).toLocaleString();
+                const formattedTime = new Date(ts).toLocaleString('en-IN');
 
                 csvContent += `"${formattedTime}",${row.ph},${row.tds},${row.turbidity},${row.temperature},${rowStatus}\n`;
             });
@@ -433,54 +620,61 @@ function setupExportButtons() {
 
         const doc = new jsPDF();
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(14, 165, 233); // Primary color
-        doc.text("AquaSense Dashboard Report", 105, 20, null, null, "center");
+        doc.setFontSize(18);
+        doc.setTextColor(14, 165, 233);
+        doc.text('AquaSense Water Quality Report', 14, 20);
 
-        doc.setFontSize(12);
-        doc.setTextColor(100, 100, 100);
-        doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 30, null, null, "center");
-
-        doc.line(20, 35, 190, 35);
-
-        // Fetch latest data for summary
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 14, 28);
+        
         try {
-            const snapshot = await get(ref(database, 'current'));
-            if (snapshot.exists()) {
-                const data = snapshot.val();
+            const snapshot = await get(ref(database, 'history'));
+            if (!snapshot.exists()) return alert("No history data to export.");
+            
+            const dataObj = snapshot.val();
+            const allHistoryData = Object.values(dataObj).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+            
+            doc.text(`Total Records: ${allHistoryData.length}`, 14, 34);
 
-                doc.setFontSize(16);
-                doc.setTextColor(0, 0, 0);
-                doc.text("Current Parameter Snapshot", 20, 50);
+            // Table header
+            let y = 44;
+            doc.setFontSize(9);
+            doc.setTextColor(0);
+            doc.setFillColor(14, 165, 233);
+            doc.setTextColor(255);
+            doc.rect(14, y - 5, 182, 8, 'F');
+            doc.text('Timestamp', 16, y);
+            doc.text('pH', 70, y);
+            doc.text('TDS (ppm)', 90, y);
+            doc.text('Turbidity', 120, y);
+            doc.text('Temp (°C)', 150, y);
+            y += 8;
 
-                doc.setFontSize(12);
-                doc.setTextColor(50, 50, 50);
+            doc.setTextColor(0);
+            allHistoryData.forEach((d, i) => {
+                if (y > 280) { doc.addPage(); y = 20; }
+                let ts = d.timestamp;
+                if (!isNaN(Number(ts))) ts = Number(ts) * 1000;
 
-                doc.text(`pH Level:`, 30, 65);
-                doc.text(`${data.ph}`, 80, 65);
+                if (i % 2 === 0) {
+                    doc.setFillColor(240, 240, 240);
+                    doc.rect(14, y - 5, 182, 7, 'F');
+                }
 
-                doc.text(`TDS:`, 30, 75);
-                doc.text(`${data.tds} ppm`, 80, 75);
+                doc.text(new Date(ts).toLocaleString('en-IN'), 16, y);
+                doc.text(String(d.ph), 70, y);
+                doc.text(String(Math.round(d.tds)), 90, y);
+                doc.text(String(d.turbidity), 120, y);
+                doc.text(String(d.temperature), 150, y);
+                y += 7;
+            });
 
-                doc.text(`Turbidity:`, 30, 85);
-                doc.text(`${data.turbidity} NTU`, 80, 85);
-
-                doc.text(`Temperature:`, 30, 95);
-                doc.text(`${data.temperature} C`, 80, 95);
-
-                // Add simple footer
-                doc.setFontSize(10);
-                doc.setTextColor(150, 150, 150);
-                doc.text("IoT Community Water Quality Monitoring System", 105, 280, null, null, "center");
-
-                doc.save(`AquaSense_Report_${new Date().toISOString().split('T')[0]}.pdf`);
-            } else {
-                alert("No current data available for Report");
-            }
-        } catch (e) {
-            console.error(e);
-            alert("Error fetching data for PDF");
+            doc.save(`aquasense_admin_report_${new Date().toISOString().slice(0, 10)}.pdf`);
+            showToast('PDF report downloaded!', 'success');
+        } catch (error) {
+            console.error(error);
+            alert("Error exporting PDF");
         }
     });
 }
@@ -636,6 +830,31 @@ function computeAnalytics(historyData) {
     if (el('trend-tds')) el('trend-tds').innerHTML = trendIcon(curTds, avgTds);
     if (el('trend-turb')) el('trend-turb').innerHTML = trendIcon(curTurb, avgTurb);
     if (el('trend-temp')) el('trend-temp').innerHTML = trendIcon(curTemp, avgTemp);
+}
+
+// ==================== WEEKLY SUMMARY ====================
+function computeWeeklySummary(historyData) {
+    if (!historyData || historyData.length === 0) return;
+
+    // Filter for last 7 days of data
+    const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const recentData = historyData.filter(d => (d.timestamp * 1000) > sevenDaysAgo);
+
+    let safe = 0;
+    let warning = 0;
+    let critical = 0;
+
+    recentData.forEach(entry => {
+        const analysis = analyzeWaterQuality(entry);
+        if (analysis.exceededCount === 0) safe++;
+        else if (analysis.exceededCount < 3) warning++;
+        else critical++;
+    });
+
+    if (elements.safeDays) elements.safeDays.textContent = safe;
+    if (elements.warningDays) elements.warningDays.textContent = warning;
+    if (elements.criticalDays) elements.criticalDays.textContent = critical;
+    if (elements.totalReadings) elements.totalReadings.textContent = recentData.length;
 }
 
 // Hook analytics into history listener

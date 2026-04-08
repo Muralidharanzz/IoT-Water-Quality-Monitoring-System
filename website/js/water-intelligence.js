@@ -1,14 +1,139 @@
 /**
  * AquaSense Water Intelligence Engine
- * Shared module for water quality analysis, disease prediction, and risk assessment
+ * Shared module for water quality analysis, disease prediction, risk assessment,
+ * and disease detail modal.
  */
 
-// Safe Limits
-const SAFE_LIMITS = {
+// ─── Safe Limits ───────────────────────────────────────────────────────────────
+export const SAFE_LIMITS = {
     ph: { min: 6.5, max: 8.5 },
     tds: { max: 300 },
     turbidity: { max: 5 },
     temperature: { max: 35 }
+};
+
+// ─── Disease Knowledge Base ────────────────────────────────────────────────────
+const DISEASE_INFO = {
+    'Cholera': {
+        icon: 'bi-bug-fill',
+        color: '#ef4444',
+        severity: 'Critical',
+        description: 'Cholera is a severe bacterial infection caused by Vibrio cholerae. It spreads through contaminated water and can cause life-threatening dehydration within hours if untreated.',
+        why: 'High turbidity creates hiding spots for bacteria in suspended particles. High temperature accelerates bacterial growth. High TDS indicates dissolved waste, sewage, or fecal contamination.',
+        triggers: [
+            { param: 'Turbidity', limit: '> 5 NTU', icon: 'bi-cloud-haze', color: '#f97316' },
+            { param: 'Temperature', limit: '> 35 °C',  icon: 'bi-thermometer-high', color: '#ef4444' },
+            { param: 'TDS',         limit: '> 300 ppm', icon: 'bi-water',            color: '#f59e0b' }
+        ],
+        symptoms: [
+            'Profuse watery diarrhoea ("rice-water" stools)',
+            'Severe vomiting',
+            'Rapid dehydration and muscle cramps',
+            'Low blood pressure, sunken eyes',
+            'Can be fatal within hours if untreated'
+        ],
+        precaution: '⚠️ Do NOT drink this water. Seek immediate medical attention. Use oral rehydration salts (ORS). Boil all water before use or switch to sealed bottled water. Report to local health authorities immediately.'
+    },
+    'Typhoid': {
+        icon: 'bi-virus',
+        color: '#f97316',
+        severity: 'High',
+        description: 'Typhoid fever is caused by Salmonella typhi bacteria. It spreads via water contaminated with human feces and causes a prolonged illness with high fever.',
+        why: 'Murky water (high turbidity) carries Salmonella typhi bacteria in suspended particles. pH imbalance removes natural antimicrobial protection. High temperature promotes rapid bacterial multiplication.',
+        triggers: [
+            { param: 'Turbidity',    limit: '> 5 NTU',        icon: 'bi-cloud-haze',       color: '#f97316' },
+            { param: 'pH',           limit: '< 6.5 or > 8.5', icon: 'bi-activity',          color: '#ef4444' },
+            { param: 'Temperature',  limit: '> 35 °C',         icon: 'bi-thermometer-high', color: '#f59e0b' }
+        ],
+        symptoms: [
+            'Sustained high fever (39–40 °C)',
+            'Severe headache and weakness',
+            'Abdominal pain and loss of appetite',
+            'Rose-coloured spots on chest',
+            'Constipation or diarrhoea'
+        ],
+        precaution: '⚠️ Avoid drinking untreated water. Get vaccinated if travelling to endemic areas. Wash hands thoroughly. Consult a doctor immediately if fever persists beyond 3 days. Use antibiotics only as prescribed.'
+    },
+    'Gastroenteritis': {
+        icon: 'bi-heart-pulse-fill',
+        color: '#f97316',
+        severity: 'High',
+        description: 'Gastroenteritis (stomach flu) is inflammation of the stomach and intestines caused by bacteria, viruses, or parasites present in contaminated water.',
+        why: 'High TDS means excess dissolved chemicals and salts irritating the gut lining. High turbidity indicates microbial load (bacteria, viruses, parasites). pH imbalance destroys the stomach\'s natural acid defences.',
+        triggers: [
+            { param: 'TDS',       limit: '> 300 ppm',    icon: 'bi-water',    color: '#f97316' },
+            { param: 'Turbidity', limit: '> 5 NTU',       icon: 'bi-cloud-haze', color: '#ef4444' },
+            { param: 'pH',        limit: '< 6.5 or > 8.5', icon: 'bi-activity', color: '#f59e0b' }
+        ],
+        symptoms: [
+            'Nausea and vomiting',
+            'Watery diarrhoea (3+ times a day)',
+            'Stomach cramps and bloating',
+            'Mild fever and chills',
+            'Dehydration if untreated'
+        ],
+        precaution: '⚠️ Do not use this water for cooking or drinking. Stay hydrated with clean water or ORS. Rest and eat bland foods. Seek medical attention if vomiting lasts > 24 hours or blood appears in stool.'
+    },
+    'Hepatitis A': {
+        icon: 'bi-lungs-fill',
+        color: '#dc2626',
+        severity: 'Critical',
+        description: 'Hepatitis A is a viral liver infection caused by the HAV virus. It spreads through water contaminated with fecal matter and can cause lasting liver damage.',
+        why: 'HAV binds to suspended particles in turbid water, making it invisible and hard to remove. High TDS indicates fecal contamination (main transmission route). pH imbalance means the water cannot naturally inactivate the virus.',
+        triggers: [
+            { param: 'Turbidity', limit: '> 5 NTU',        icon: 'bi-cloud-haze', color: '#dc2626' },
+            { param: 'TDS',       limit: '> 300 ppm',       icon: 'bi-water',      color: '#ef4444' },
+            { param: 'pH',        limit: '< 6.5 or > 8.5',  icon: 'bi-activity',   color: '#f97316' }
+        ],
+        symptoms: [
+            'Jaundice (yellowing of skin and eyes)',
+            'Dark urine and pale stools',
+            'Extreme fatigue and nausea',
+            'Abdominal pain (upper right)',
+            'Fever and loss of appetite'
+        ],
+        precaution: '🚨 Do NOT drink or cook with this water. Get vaccinated against Hepatitis A. Practise strict handwashing. Consult a doctor immediately. This is a notifiable disease — report to health authorities.'
+    },
+    'Diarrhea': {
+        icon: 'bi-droplet-fill',
+        color: '#f59e0b',
+        severity: 'Moderate',
+        description: 'Waterborne diarrhoea is the most common consequence of contaminated water. It is caused by a range of bacteria (E. coli, Salmonella), viruses, and parasites.',
+        why: 'High turbidity carries microorganisms into the gut. High TDS introduces dissolved sewage and waste products. High temperature speeds up bacterial growth, increasing microbial load dramatically.',
+        triggers: [
+            { param: 'Turbidity',   limit: '> 5 NTU',  icon: 'bi-cloud-haze',       color: '#f59e0b' },
+            { param: 'TDS',         limit: '> 300 ppm', icon: 'bi-water',            color: '#f97316' },
+            { param: 'Temperature', limit: '> 35 °C',   icon: 'bi-thermometer-high', color: '#ef4444' }
+        ],
+        symptoms: [
+            'Loose or watery stools (3+ per day)',
+            'Stomach cramps and urgency',
+            'Mild nausea and discomfort',
+            'Dehydration in children and elderly',
+            'Usually resolves in 2–3 days'
+        ],
+        precaution: '⚠️ Switch to bottled or boiled water immediately. Drink plenty of clean fluids to avoid dehydration. Use ORS sachets. Children and elderly need immediate medical attention if symptoms worsen.'
+    },
+    'Skin Irritation': {
+        icon: 'bi-bandaid-fill',
+        color: '#f59e0b',
+        severity: 'Moderate',
+        description: 'Skin irritation and chemical dermatitis occur when highly acidic or alkaline water, combined with dissolved minerals, disrupts the skin\'s natural pH barrier.',
+        why: 'Extreme pH (< 6 or > 9) is chemically corrosive — it directly damages the skin barrier. High TDS means dissolved salts, heavy metals, and minerals that cause dryness, rashes, and inflammation. High temperature opens skin pores, making absorption of irritants worse.',
+        triggers: [
+            { param: 'pH',          limit: '< 6.0 or > 9.0 (extreme)', icon: 'bi-activity',          color: '#f59e0b' },
+            { param: 'TDS',         limit: '> 300 ppm',                  icon: 'bi-water',            color: '#f97316' },
+            { param: 'Temperature', limit: '> 35 °C',                    icon: 'bi-thermometer-high', color: '#ef4444' }
+        ],
+        symptoms: [
+            'Redness, itching, and rashes after water contact',
+            'Dry or flaky skin',
+            'Burning sensation on skin or eyes',
+            'Eczema flare-ups or hives',
+            'Hair damage or scalp irritation'
+        ],
+        precaution: '⚠️ Do not bathe or wash with this water. Use bottled or purified water for personal hygiene. Apply soothing moisturiser if skin is affected. Consult a dermatologist if rash worsens. Install a water softener or neutraliser.'
+    }
 };
 
 // Status Tiers
@@ -190,20 +315,59 @@ export function renderIntelligenceUI(analysis) {
     const diseaseSection = document.getElementById('wq-disease-prediction');
     if (diseaseSection) {
         if (diseases.length === 0) {
+            // Build preview chips using DISEASE_INFO for educational purposes
+            const previewCards = Object.entries(DISEASE_INFO).map(([name, info]) => `
+                <div class="wq-disease-card" style="--disease-color: ${info.color}; padding: 12px 16px; min-width: 130px; text-align: center; justify-content: center; align-items: center;" data-disease="${name}" role="button" tabindex="0" aria-label="View details for ${name}">
+                    <div style="pointer-events:none;">
+                        <i class="bi ${info.icon}" style="font-size: 1.4rem; color: ${info.color}; display: block; margin-bottom: 6px;"></i>
+                        <h6 style="margin: 0; font-size: 0.85rem; font-weight: 600;">${name}</h6>
+                    </div>
+                </div>
+            `).join('');
+
             diseaseSection.innerHTML = `
                 <div class="wq-disease-container">
-                    <h5 class="wq-section-title"><i class="bi bi-shield-check me-2"></i>Disease Risk Analysis</h5>
-                    <div class="wq-no-disease">
-                        <i class="bi bi-emoji-smile-fill"></i>
-                        <p>No disease risks detected. Water parameters are within acceptable range.</p>
+                    <h5 class="wq-section-title"><i class="bi bi-shield-check me-2" style="color: #10b981;"></i>Disease Risk Analysis</h5>
+                    <div class="wq-no-disease" style="text-align: center; padding: 25px 20px; background: rgba(16,185,129,0.05); border-radius: 12px; border: 1px solid rgba(16,185,129,0.1); margin-bottom: 24px;">
+                        <i class="bi bi-emoji-smile-fill" style="color: #10b981; font-size: 2.2rem; display: block; margin-bottom: 12px;"></i>
+                        <p style="margin: 0; font-size: 1.05rem; font-weight: 500; color: #fff;">No disease risks detected</p>
+                        <p style="margin: 4px 0 0; color: rgba(255,255,255,0.6); font-size: 0.9rem;">Water parameters are within acceptable ranges.</p>
+                    </div>
+
+                    <div class="wq-disease-preview">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0" style="color: rgba(255,255,255,0.7); font-size: 0.95rem;"><i class="bi bi-book me-2"></i>Educational Preview</h6>
+                            <small style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Tap to learn ›</small>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2" id="disease-preview-grid">
+                            ${previewCards}
+                        </div>
                     </div>
                 </div>
             `;
+
+            // Delegate click listener for the preview cards
+            const previewGrid = diseaseSection.querySelector('#disease-preview-grid');
+            if (previewGrid) {
+                previewGrid.addEventListener('click', (e) => {
+                    const card = e.target.closest('.wq-disease-card');
+                    if (card && card.dataset.disease) {
+                        openDiseaseModal(card.dataset.disease);
+                    }
+                });
+                previewGrid.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        const card = e.target.closest('.wq-disease-card');
+                        if (card && card.dataset.disease) openDiseaseModal(card.dataset.disease);
+                    }
+                });
+            }
         } else {
+            // Build cards — children have pointer-events:none so clicks always land on the card
             const diseaseCards = diseases.map(d => `
-                <div class="wq-disease-card" style="--disease-color: ${d.color}">
-                    <div class="wq-disease-icon"><i class="bi ${d.icon}"></i></div>
-                    <div class="wq-disease-info">
+                <div class="wq-disease-card" style="--disease-color: ${d.color}" data-disease="${d.name}" role="button" tabindex="0" aria-label="View details for ${d.name}">
+                    <div class="wq-disease-icon" style="pointer-events:none;"><i class="bi ${d.icon}"></i></div>
+                    <div class="wq-disease-info" style="pointer-events:none;">
                         <h6>${d.name}</h6>
                         <span class="wq-disease-severity" style="color: ${d.color}">${d.severity} Risk</span>
                     </div>
@@ -213,12 +377,139 @@ export function renderIntelligenceUI(analysis) {
             diseaseSection.innerHTML = `
                 <div class="wq-disease-container">
                     <h5 class="wq-section-title"><i class="bi bi-virus me-2 text-danger"></i>Disease Risk Prediction</h5>
-                    <p class="wq-disease-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i> ${diseases.length} potential disease risk${diseases.length > 1 ? 's' : ''} detected</p>
-                    <div class="wq-disease-grid">
+                    <p class="wq-disease-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i> ${diseases.length} potential disease risk${diseases.length > 1 ? 's' : ''} detected — <small style="opacity:0.7;">tap a card for details ›</small></p>
+                    <div class="wq-disease-grid" id="disease-card-grid">
                         ${diseaseCards}
                     </div>
                 </div>
             `;
+
+            // Single delegated listener — catches clicks anywhere inside the grid
+            const grid = diseaseSection.querySelector('#disease-card-grid');
+            if (grid) {
+                grid.addEventListener('click', (e) => {
+                    const card = e.target.closest('.wq-disease-card');
+                    if (card && card.dataset.disease) {
+                        openDiseaseModal(card.dataset.disease);
+                    }
+                });
+                grid.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        const card = e.target.closest('.wq-disease-card');
+                        if (card && card.dataset.disease) openDiseaseModal(card.dataset.disease);
+                    }
+                });
+            }
         }
     }
+}
+
+// ─── Disease Detail Modal Engine ───────────────────────────────────────────────
+
+function ensureModalDOM() {
+    if (document.getElementById('disease-modal-backdrop')) return;
+
+    const backdrop = document.createElement('div');
+    backdrop.id = 'disease-modal-backdrop';
+    backdrop.className = 'disease-modal-backdrop';
+    backdrop.addEventListener('click', closeDiseaseModal);
+
+    const sheet = document.createElement('div');
+    sheet.id = 'disease-modal-sheet';
+    sheet.className = 'disease-modal-sheet';
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-modal', 'true');
+    sheet.innerHTML = `
+        <div class="disease-modal-handle"></div>
+        <div id="disease-modal-body" class="disease-modal-body"></div>
+    `;
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(sheet);
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDiseaseModal(); });
+}
+
+export function openDiseaseModal(diseaseName) {
+    const info = DISEASE_INFO[diseaseName];
+    if (!info) return;
+
+    ensureModalDOM();
+
+    const severityColors = {
+        'Critical': { bg: 'rgba(220,38,38,0.15)',  border: 'rgba(220,38,38,0.3)',  text: '#ef4444' },
+        'High':     { bg: 'rgba(249,115,22,0.15)', border: 'rgba(249,115,22,0.3)', text: '#f97316' },
+        'Moderate': { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', text: '#f59e0b' }
+    };
+    const sc = severityColors[info.severity] || severityColors['Moderate'];
+
+    const triggerChips = info.triggers.map(t => `
+        <div class="disease-trigger-chip" style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08);">
+            <i class="bi ${t.icon}" style="color:${t.color}; font-size:0.9rem;"></i>
+            <span class="dchip-label">${t.param}:</span>
+            <span class="dchip-limit">${t.limit}</span>
+        </div>`).join('');
+
+    const symptomItems = info.symptoms.map(s => `
+        <li>
+            <i class="bi bi-dot" style="color:${info.color}; font-size:1.2rem;"></i>
+            ${s}
+        </li>`).join('');
+
+    document.getElementById('disease-modal-body').innerHTML = `
+        <div class="disease-modal-header">
+            <div class="disease-modal-title-wrap">
+                <div class="disease-modal-icon" style="background:${sc.bg}; border:1px solid ${sc.border};">
+                    <i class="bi ${info.icon}" style="color:${info.color};"></i>
+                </div>
+                <div>
+                    <h4 class="disease-modal-name">${diseaseName}</h4>
+                    <span class="disease-modal-severity-badge" style="background:${sc.bg}; color:${sc.text}; border:1px solid ${sc.border};">
+                        ${info.severity} Risk
+                    </span>
+                </div>
+            </div>
+            <button class="disease-modal-close" id="dmodal-close-btn" aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <p class="disease-modal-section-label">What is it?</p>
+        <p class="disease-modal-desc">${info.description}</p>
+        <hr class="disease-modal-divider">
+
+        <p class="disease-modal-section-label">Why this water is risky</p>
+        <p class="disease-modal-desc">${info.why}</p>
+        <hr class="disease-modal-divider">
+
+        <p class="disease-modal-section-label">Triggered when</p>
+        <div class="disease-trigger-grid">${triggerChips}</div>
+        <hr class="disease-modal-divider">
+
+        <p class="disease-modal-section-label">Symptoms to watch</p>
+        <ul class="disease-symptom-list">${symptomItems}</ul>
+        <hr class="disease-modal-divider">
+
+        <p class="disease-modal-section-label">Precautions &amp; Action</p>
+        <div class="disease-precaution-box" style="background:${sc.bg}; border:1px solid ${sc.border};">
+            <p>${info.precaution}</p>
+        </div>
+    `;
+
+    requestAnimationFrame(() => {
+        document.getElementById('disease-modal-backdrop').classList.add('visible');
+        document.getElementById('disease-modal-sheet').classList.add('visible');
+        document.body.style.overflow = 'hidden';
+    });
+
+    document.getElementById('dmodal-close-btn').addEventListener('click', closeDiseaseModal);
+}
+
+function closeDiseaseModal() {
+    const backdrop = document.getElementById('disease-modal-backdrop');
+    const sheet    = document.getElementById('disease-modal-sheet');
+    if (!backdrop || !sheet) return;
+    backdrop.classList.remove('visible');
+    sheet.classList.remove('visible');
+    document.body.style.overflow = '';
 }

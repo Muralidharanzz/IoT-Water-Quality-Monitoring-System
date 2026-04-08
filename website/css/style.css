@@ -175,14 +175,37 @@ body::after {
   width: 280px;
   background: var(--dark-card);
   border-right: 1px solid var(--glass-border);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  padding: 20px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.sidebar-link {
+  border-radius: 12px !important;
+  transition: all 0.2s ease;
+  border: 1px solid transparent !important;
+  color: var(--text-muted) !important;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-main) !important;
+}
+
+.sidebar-link.active {
+  background: rgba(14, 165, 233, 0.15) !important;
+  border-color: rgba(14, 165, 233, 0.3) !important;
+  color: var(--primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .main-content {
@@ -193,16 +216,16 @@ body::after {
 
 /* Data Cards */
 .data-value {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
   margin: 10px 0;
-  background: linear-gradient(135deg, #e2e8f0 0%, var(--primary) 100%);
+  background: linear-gradient(135deg, #ffffff 0%, var(--primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
   line-height: 1.1;
-  filter: drop-shadow(0 0 8px rgba(14,165,233,0.25));
+  filter: drop-shadow(0 0 12px rgba(14,165,233,0.3));
 }
 
 .status-badge {
@@ -593,12 +616,19 @@ body::after {
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.3s ease;
+  animation: diseasePulse 3s ease-in-out infinite;
 }
 
 .wq-disease-card:hover {
   transform: translateY(-2px);
   border-color: var(--disease-color, rgba(255, 255, 255, 0.15));
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation-play-state: paused;
+}
+
+@keyframes diseasePulse {
+  0%, 100% { box-shadow: 0 0 5px transparent; border-color: rgba(255, 255, 255, 0.06); }
+  50% { box-shadow: 0 0 15px var(--disease-color, rgba(255, 255, 255, 0.15)); border-color: var(--disease-color); }
 }
 
 .wq-disease-icon {
@@ -917,12 +947,293 @@ html, body, .glass-card, .sidebar, .form-control, .btn-outline-light,
 }
 .data-value { animation: shimmerIn 0.5s ease-out; }
 
-/* Disease card — critical pulse */
-.wq-disease-card[style*="dc2626"] {
-  animation: pulseSevere 2s ease-in-out infinite;
+@keyframes cardPulseGlow {
+  0%, 100% { box-shadow: 0 0 15px var(--disease-color); opacity: 0.9; transform: translateY(0px); }
+  50% { box-shadow: 0 0 30px var(--disease-color); opacity: 1; transform: translateY(-2px); }
+}
+
+/* Apply continuous pulse glow to all disease cards */
+.wq-disease-card {
+  animation: cardPulseGlow 3s ease-in-out infinite;
 }
 
 /* Neon sidebar active — stronger glow */
 .sidebar-link.active {
   box-shadow: inset 3px 0 0 var(--primary), 0 0 16px rgba(14,165,233,0.12);
 }
+
+/* ==================== DISEASE DETAIL MODAL ==================== */
+
+/* Make disease cards look tappable */
+.wq-disease-card {
+  cursor: pointer;
+  position: relative;
+  z-index: 2;                    /* sit above glass-card stacking context */
+  -webkit-tap-highlight-color: rgba(255,255,255,0.08);
+}
+
+/* Removed overlapping Tap for details pseudo-element */
+.wq-disease-card:active {
+  transform: scale(0.97);
+}
+
+/* Backdrop overlay */
+.disease-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.disease-modal-backdrop.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Modal sheet — slides up from bottom on mobile */
+.disease-modal-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: linear-gradient(180deg, #161e37 0%, #0f172a 100%);
+  border-top: 1px solid var(--glass-border);
+  border-radius: 24px 24px 0 0;
+  padding: 0;
+  max-height: 88vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.34, 1.10, 0.64, 1);
+  box-shadow: 0 -16px 60px rgba(0, 0, 0, 0.6);
+}
+
+.disease-modal-sheet.visible {
+  transform: translateY(0);
+}
+
+/* Desktop: centered dialog */
+@media (min-width: 768px) {
+  .disease-modal-sheet {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: 580px;
+    max-width: 92vw;
+    max-height: 82vh;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.10, 0.64, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+  .disease-modal-sheet.visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Drag handle */
+.disease-modal-handle {
+  width: 40px;
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+  margin: 14px auto 0;
+}
+
+@media (min-width: 768px) {
+  .disease-modal-handle { display: none; }
+}
+
+/* Modal inner padding */
+.disease-modal-body {
+  padding: 20px 24px 28px;
+}
+
+/* Modal header */
+.disease-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.disease-modal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.disease-modal-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.disease-modal-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 4px;
+}
+
+.disease-modal-severity-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.disease-modal-close {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-muted);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.disease-modal-close:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Divider */
+.disease-modal-divider {
+  border: none;
+  border-top: 1px solid var(--glass-border);
+  margin: 16px 0;
+}
+
+/* Section headings inside modal */
+.disease-modal-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-placeholder);
+  margin-bottom: 8px;
+}
+
+/* Description text */
+.disease-modal-desc {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Parameter trigger chips */
+.disease-trigger-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.disease-trigger-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.disease-trigger-chip .dchip-label {
+  color: var(--text-muted);
+}
+
+.disease-trigger-chip .dchip-limit {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Symptoms list */
+.disease-symptom-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.disease-symptom-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.disease-symptom-list li i {
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Precaution box */
+.disease-precaution-box {
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 4px;
+}
+
+.disease-precaution-box p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* Light theme overrides */
+[data-theme="light"] .disease-modal-sheet {
+  background: linear-gradient(180deg, rgba(248,250,252,0.99) 0%, rgba(241,245,249,0.99) 100%);
+  border-color: #e2e8f0;
+}
+
+[data-theme="light"] .disease-modal-name {
+  color: #0f172a;
+}
+
+[data-theme="light"] .disease-modal-desc,
+[data-theme="light"] .disease-symptom-list li,
+[data-theme="light"] .disease-precaution-box p {
+  color: #475569;
+}
+
+[data-theme="light"] .disease-modal-close {
+  background: rgba(0,0,0,0.04);
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+
+[data-theme="light"] .disease-modal-handle {
+  background: rgba(0,0,0,0.12);
+}

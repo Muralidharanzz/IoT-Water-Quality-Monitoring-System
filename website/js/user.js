@@ -1,5 +1,5 @@
 import { database, auth } from './firebase-config.js';
-import { ref, onValue, get, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+import { ref, onValue, get, query, limitToLast, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 import { analyzeWaterQuality, renderIntelligenceUI } from './water-intelligence.js';
 import { showToast, sendCriticalEmailAlert } from './notifications.js';
@@ -37,6 +37,8 @@ const SAFE_LIMITS = {
     temp: { max: 35 }
 };
 
+let currentUserDoc = null;
+
 // Auth Guard
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -50,6 +52,7 @@ onAuthStateChanged(auth, async (user) => {
 
     if (snapshot.exists()) {
         const userData = snapshot.val();
+        currentUserDoc = userData;
 
         if (userData.role !== 'user' || !userData.approved) {
             window.location.href = 'index.html'; // Kick unauthorized or unapproved
@@ -65,8 +68,28 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // Logout
-document.getElementById('logout-btn').addEventListener('click', () => {
-    signOut(auth).then(() => window.location.href = 'index.html');
+document.getElementById('logout-btn').addEventListener('click', async () => {
+    try {
+        const user = auth.currentUser;
+        if (user && currentUserDoc) {
+            try {
+                await push(ref(database, 'auth_logs'), {
+                    email: user.email,
+                    name: currentUserDoc.name || 'User',
+                    role: currentUserDoc.role || 'user',
+                    action: 'Logout',
+                    timestamp: Date.now()
+                });
+            } catch (logError) {
+                console.error("Logout logging failed:", logError);
+            }
+        }
+    } catch (error) {
+        console.error("Logout error:", error);
+    } finally {
+        await signOut(auth);
+        window.location.href = 'index.html';
+    }
 });
 
 // Sidebar Toggle (mobile)
@@ -119,15 +142,49 @@ function evaluateParameter(val, type) {
     }
 }
 
+let connectionInterval;
+let lastDataTimestamp = 0;
+
+function updateConnectionStatus(timestamp) {
+    const connStatusEl = document.getElementById('connection-status');
+    if (!connStatusEl) return;
+    
+    let ts = timestamp;
+    if (!isNaN(Number(ts))) {
+        ts = Number(ts);
+        if (ts > 1e11) ts = ts / 1000;
+    }
+    
+    const currentSeconds = Date.now() / 1000;
+    const isOnline = (currentSeconds - ts) < 120;
+    
+    if (isOnline) {
+        connStatusEl.className = 'status-badge status-safe online-badge d-flex align-items-center';
+        connStatusEl.innerHTML = '<i class="bi bi-wifi me-1"></i>Online';
+    } else {
+        connStatusEl.className = 'status-badge status-danger online-badge d-flex align-items-center opacity-75';
+        connStatusEl.innerHTML = '<i class="bi bi-wifi-off me-1"></i>Offline';
+    }
+}
+
 // Listen to Latest Sensor Data
 function listenToLiveData() {
     const latestRef = ref(database, 'current');
     onValue(latestRef, (snapshot) => {
         if (snapshot.exists()) {
             const data = snapshot.val();
+            lastDataTimestamp = data.timestamp || (Date.now() / 1000);
             updateDashboardUI(data);
+            updateConnectionStatus(lastDataTimestamp);
         }
     });
+
+    clearInterval(connectionInterval);
+    connectionInterval = setInterval(() => {
+        if (lastDataTimestamp > 0) {
+            updateConnectionStatus(lastDataTimestamp);
+        }
+    }, 10000);
 }
 
 function updateDashboardUI(data) {
@@ -142,7 +199,7 @@ function updateDashboardUI(data) {
     let ts = data.timestamp;
     if (!isNaN(Number(ts))) ts = Number(ts) * 1000;
     const date = new Date(ts);
-    elements.lastUpdated.textContent = date.toLocaleString();
+    elements.lastUpdated.textContent = date.toLocaleString('en-IN');
 
     // Evaluate
     const phStatus = evaluateParameter(data.ph, 'ph');
@@ -301,7 +358,7 @@ document.getElementById('export-csv-btn')?.addEventListener('click', () => {
     const rows = allHistoryData.map(d => {
         let ts = d.timestamp;
         if (!isNaN(Number(ts))) ts = Number(ts) * 1000;
-        return `${new Date(ts).toLocaleString()},${d.ph},${d.tds},${d.turbidity},${d.temperature}`;
+        return `${new Date(ts).toLocaleString('en-IN')},${d.ph},${d.tds},${d.turbidity},${d.temperature}`;
     }).join('\n');
 
     const blob = new Blob([headers + rows], { type: 'text/csv' });
@@ -335,7 +392,7 @@ document.getElementById('export-pdf-btn')?.addEventListener('click', async () =>
 
     doc.setFontSize(10);
     doc.setTextColor(100);
-    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+    doc.text(`Generated: ${new Date().toLocaleString('en-IN')}`, 14, 28);
     doc.text(`Total Records: ${allHistoryData.length}`, 14, 34);
 
     // Table header
@@ -363,7 +420,7 @@ document.getElementById('export-pdf-btn')?.addEventListener('click', async () =>
             doc.rect(14, y - 5, 182, 7, 'F');
         }
 
-        doc.text(new Date(ts).toLocaleString(), 16, y);
+        doc.text(new Date(ts).toLocaleString('en-IN'), 16, y);
         doc.text(String(d.ph), 70, y);
         doc.text(String(d.tds), 90, y);
         doc.text(String(d.turbidity), 120, y);

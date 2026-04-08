@@ -24,6 +24,13 @@
         ".read": "auth != null && auth.uid === $uid",
         ".write": "auth != null && auth.uid === $uid"
       }
+    },
+    "auth_logs": {
+      ".read": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      ".write": "auth != null",
+      "$log_id": {
+        ".validate": "newData.hasChildren(['email', 'name', 'role', 'action', 'timestamp'])"
+      }
     }
   }
 }

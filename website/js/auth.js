@@ -1,6 +1,6 @@
 import { auth, database } from './firebase-config.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
-import { ref, get, set, child } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+import { ref, get, set, child, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
 // ==================== LOGIN ====================
 const loginForm = document.getElementById('login-form');
@@ -36,10 +36,27 @@ if (loginForm) {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
 
+                // Helper to log without blocking login on failure
+                const logEvent = async (action) => {
+                    try {
+                        await push(ref(database, 'auth_logs'), {
+                            email: user.email,
+                            name: userData.name || (userData.role === 'admin' ? 'Admin' : 'User'),
+                            role: userData.role,
+                            action: action,
+                            timestamp: Date.now()
+                        });
+                    } catch (e) {
+                        console.error("Logging failed but continuing login:", e);
+                    }
+                };
+
                 if (userData.role === 'admin') {
+                    await logEvent('Login');
                     window.location.href = 'admin.html';
                 } else if (userData.role === 'user') {
                     if (userData.approved === true) {
+                        await logEvent('Login');
                         window.location.href = 'user.html';
                     } else {
                         showLoginError("Your account is waiting for Admin approval.");

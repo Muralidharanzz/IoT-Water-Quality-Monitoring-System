@@ -33,23 +33,28 @@
 
         <ul class="nav flex-column mb-auto gap-2">
             <li class="nav-item">
-                <a href="#overview" class="nav-link text-white active glass-card py-2 px-3">
+                <a href="#overview" class="sidebar-link nav-link text-white active glass-card py-2 px-3">
                     <i class="bi bi-speedometer2 me-2"></i> Overview
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#history" class="nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
+                <a href="#intelligence" class="sidebar-link nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
+                    <i class="bi bi-shield-check me-2"></i> Water Intelligence
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#history" class="sidebar-link nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
                     <i class="bi bi-graph-up me-2"></i> History Graphs
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#approval" class="nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
+                <a href="#approval" class="sidebar-link nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
                     <i class="bi bi-person-check me-2"></i> User Approvals
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#reports" class="nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
-                    <i class="bi bi-file-earmark-text me-2"></i> Reports & Export
+                <a href="#auth-logs" class="sidebar-link nav-link text-white glass-card py-2 px-3 border-0 bg-transparent">
+                    <i class="bi bi-person-lines-fill me-2"></i> Auth Logs
                 </a>
             </li>
         </ul>
@@ -84,254 +89,352 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Header -->
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-            <div class="d-flex align-items-center gap-2">
-                <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="bi bi-list"></i></button>
-                <h2 class="fw-bold">Dashboard Overview</h2>
+        <!-- ── Header ── -->
+        <div class="d-flex align-items-center header-row mb-4 gap-2" style="flex-wrap: nowrap;">
+
+            <!-- Hamburger — only one, only on mobile -->
+            <button class="mobile-menu-btn flex-shrink-0" id="mobile-menu-btn" aria-label="Open menu">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <!-- Greeting -->
+            <div class="header-greeting me-auto" style="min-width: 0;">
+                <h2 class="fw-bold mb-0 text-truncate" id="admin-greeting" style="font-size: 1.5rem;">Admin Dashboard</h2>
+                <p class="text-muted mb-0" style="font-size: 0.82rem;">System management and analytics.</p>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <!-- Notification Bell -->
+
+            <!-- Right controls — scrollable row on small screens -->
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+
+                <!-- Last updated pill -->
+                <div id="last-updated-pill" class="glass-card d-flex align-items-center text-muted" style="border-radius:20px; font-size:0.82rem; padding:5px 12px; white-space:nowrap; height:36px;">
+                    <i class="bi bi-clock-history me-1 text-info" style="font-size:0.9rem;"></i>
+                    <span id="last-updated" class="text-white fw-semibold">--</span>
+                </div>
+
+                <!-- Notification bell -->
                 <div class="position-relative" id="notif-bell-wrap">
                     <button class="btn btn-outline-light position-relative" id="notif-bell-btn"
-                        style="border-color: var(--glass-border); border-radius:50%; width:40px; height:40px; padding:0;">
-                        <i class="bi bi-bell fs-5"></i>
-                        <span
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
-                            id="notif-badge">0</span>
+                        style="border-color:var(--glass-border); border-radius:50%; width:36px; height:36px; padding:0;" aria-label="Notifications">
+                        <i class="bi bi-bell" style="font-size:0.95rem;"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notif-badge">0</span>
                     </button>
+                    <!-- Notification Dropdown -->
                     <div class="glass-card p-0 d-none" id="notif-dropdown"
-                        style="position:absolute; right:0; top:48px; width:340px; max-height:400px; overflow-y:auto; z-index:999; border-radius:12px;">
-                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom"
-                            style="border-color: var(--glass-border) !important;">
+                        style="position:absolute; right:0; top:44px; width:320px; max-height:380px; overflow-y:auto; z-index:1000; border-radius:12px;">
+                        <div class="d-flex justify-content-between align-items-center p-3 border-bottom" style="border-color:var(--glass-border) !important;">
                             <h6 class="mb-0 fw-bold"><i class="bi bi-bell me-2"></i>Notifications</h6>
-                            <button class="btn btn-sm text-muted" id="notif-clear-btn" style="font-size:0.8rem;">Clear
-                                All</button>
+                            <button class="btn btn-sm text-muted" id="notif-clear-btn" style="font-size:0.78rem;">Clear All</button>
                         </div>
-                        <div id="notif-list" style="max-height:340px; overflow-y:auto;">
+                        <div id="notif-list" style="max-height:320px; overflow-y:auto;">
                             <div class="text-center text-muted p-4"><small>No notifications yet</small></div>
                         </div>
                     </div>
                 </div>
-                <div id="connection-status" class="status-badge status-safe">
-                    <i class="bi bi-wifi"></i> Online
-                </div>
+
+                <!-- Online badge -->
+                <span id="connection-status" class="status-badge status-safe online-badge d-flex align-items-center" style="height:36px; white-space:nowrap; font-size:0.8rem;">
+                    <i class="bi bi-wifi me-1"></i>Online
+                </span>
             </div>
         </div>
 
         <!-- Alert Banner -->
-        <div id="alert-banner" class="alert-banner d-none">
+        <div id="alert-banner" class="alert-banner d-none mb-4">
             <i class="bi bi-exclamation-triangle-fill fs-4"></i>
             <div>
                 <strong>Water Quality Alert!</strong>
-                <p class="mb-0" id="alert-message">Parameters are out of safe limits.</p>
+                <p class="mb-0" id="alert-message">Safety limits exceeded. Admin intervention may be required.</p>
             </div>
         </div>
 
-        <!-- Live Parameters Cards -->
-        <div class="row g-4 mb-5" id="overview">
-            <div class="col-md-3">
-                <div class="glass-card p-4 h-100">
-                    <h6 class="text-muted text-uppercase mb-2">pH Level</h6>
-                    <h2 class="data-value" id="val-ph">--</h2>
-                    <span id="badge-ph" class="status-badge status-safe">Loading...</span>
-                    <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: 6.5 - 8.5</p>
+        <!-- Quick Stats Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="glass-card p-3 text-center h-100">
+                    <i class="bi bi-people text-primary fs-4 mb-2 d-inline-block"></i>
+                    <h6 class="text-muted small mb-1">Total Users</h6>
+                    <h4 class="fw-bold mb-0" id="stat-total-users">--</h4>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="glass-card p-4 h-100">
-                    <h6 class="text-muted text-uppercase mb-2">TDS (ppm)</h6>
-                    <h2 class="data-value" id="val-tds">--</h2>
-                    <span id="badge-tds" class="status-badge status-safe">Loading...</span>
-                    <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: < 300</p>
+            <div class="col-6 col-md-3">
+                <div class="glass-card p-3 text-center h-100">
+                    <i class="bi bi-shield-check text-success fs-4 mb-2 d-inline-block"></i>
+                    <h6 class="text-muted small mb-1">Admins</h6>
+                    <h4 class="fw-bold mb-0" id="stat-admin-count">--</h4>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="glass-card p-4 h-100">
-                    <h6 class="text-muted text-uppercase mb-2">Turbidity (NTU)</h6>
-                    <h2 class="data-value" id="val-turb">--</h2>
-                    <span id="badge-turb" class="status-badge status-safe">Loading...</span>
-                    <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: < 5</p>
+            <div class="col-6 col-md-3">
+                <div class="glass-card p-3 text-center h-100">
+                    <i class="bi bi-person text-info fs-4 mb-2 d-inline-block"></i>
+                    <h6 class="text-muted small mb-1">Verified Users</h6>
+                    <h4 class="fw-bold mb-0" id="stat-verified-count">--</h4>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="glass-card p-4 h-100">
-                    <h6 class="text-muted text-uppercase mb-2">Temperature (°C)</h6>
-                    <h2 class="data-value" id="val-temp">--</h2>
-                    <span id="badge-temp" class="status-badge status-safe">Loading...</span>
-                    <p class="text-muted mt-2 mb-0" style="font-size: 0.8rem;">Safe: < 35°C</p>
+            <div class="col-6 col-md-3">
+                <div class="glass-card p-3 text-center h-100">
+                    <i class="bi bi-clock-history text-warning fs-4 mb-2 d-inline-block"></i>
+                    <h6 class="text-muted small mb-1">Pending</h6>
+                    <h4 class="fw-bold mb-0" id="stat-pending-count">--</h4>
                 </div>
             </div>
         </div>
 
-        <!-- Water Intelligence Section -->
-        <div id="wq-status-card" class="mb-4">
-            <!-- Rendered dynamically by water-intelligence.js -->
-        </div>
-
-        <div id="wq-recommendation" class="mb-4">
-            <!-- Recommendation Box -->
-        </div>
-
-        <div class="wq-intelligence-grid mb-5">
-            <div class="glass-card p-4">
-                <div id="wq-risk-meter">
-                    <!-- Risk Gauge rendered here -->
+        <!-- Dashboard View (Default) -->
+        <div id="view-dashboard">
+            <!-- Live Parameters Cards -->
+            <div class="row g-3 mb-5" id="overview">
+                <div class="col-6 col-md-3">
+                    <div class="glass-card p-3 p-md-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-1" style="font-size:0.72rem;">pH Level</h6>
+                        <h2 class="data-value mb-2" id="val-ph" style="font-size: 1.8rem;">--</h2>
+                        <span id="badge-ph" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">Safe: 6.5 - 8.5</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="glass-card p-3 p-md-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-1" style="font-size:0.72rem;">TDS (ppm)</h6>
+                        <h2 class="data-value mb-2" id="val-tds" style="font-size: 1.8rem;">--</h2>
+                        <span id="badge-tds" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">Safe: < 300</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="glass-card p-3 p-md-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-1" style="font-size:0.72rem;">Turbidity (NTU)</h6>
+                        <h2 class="data-value mb-2" id="val-turb" style="font-size: 1.8rem;">--</h2>
+                        <span id="badge-turb" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">Safe: < 5</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="glass-card p-3 p-md-4 h-100">
+                        <h6 class="text-muted text-uppercase mb-1" style="font-size:0.72rem;">Temperature (°C)</h6>
+                        <h2 class="data-value mb-2" id="val-temp" style="font-size: 1.8rem;">--</h2>
+                        <span id="badge-temp" class="status-badge status-safe">Loading...</span>
+                        <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">Safe: < 35°C</p>
+                    </div>
                 </div>
             </div>
-            <div class="glass-card p-4">
-                <div id="wq-disease-prediction">
-                    <!-- Disease cards rendered here -->
+
+            <!-- Intelligence Engine Status -->
+            <div id="section-intelligence" class="mb-5">
+                <h4 class="fw-bold mb-3"><i class="bi bi-shield-check me-2 text-success"></i>Water Intelligence</h4>
+                <div id="wq-status-card" class="mb-4"></div>
+                <div id="wq-recommendation" class="mb-4"></div>
+                <div class="wq-intelligence-grid">
+                    <div class="glass-card p-4">
+                        <div id="wq-risk-meter"></div>
+                    </div>
+                    <div class="glass-card p-4">
+                        <div id="wq-disease-prediction"></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- History Graphs -->
-        <div class="glass-card p-4 mb-5" id="history">
-            <h4 class="mb-4">Live Trends (Last 20 Readings)</h4>
-            <div class="chart-container">
-                <canvas id="historyChart"></canvas>
+            <!-- System Status Settings (Inline) -->
+            <div class="glass-card p-4 mb-5">
+                <div class="d-flex align-items-center mb-3">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-gear-fill me-2 text-secondary"></i>System Calibration</h4>
+                    <i class="bi bi-info-circle ms-2 text-muted" title="Adjust sensor offsets to account for hardware variation." style="cursor: help;"></i>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label small text-muted">pH Offset <small>(± value added to raw reading)</small></label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="cal-ph-offset" step="0.1" value="0">
+                            <button class="btn btn-outline-secondary" id="save-ph-btn">Calibrate</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label small text-muted">TDS Factor <small>(Multiplier for PPM conversion)</small></label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="cal-tds-factor" step="0.01" value="0.5">
+                            <button class="btn btn-outline-secondary" id="save-tds-btn">Calibrate</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="row g-4">
-            <!-- User Management -->
-            <div class="col-lg-12" id="approval">
+            <!-- History Graph & Weekly Summary -->
+            <div class="row g-4 mb-5">
+                <div class="col-xl-8 col-lg-7">
+                    <div id="history" class="glass-card p-4 h-100 d-flex flex-column">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                            <h4 class="fw-bold mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>Live Sensor History</h4>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-light btn-sm" id="btn-export-csv" style="border-color:var(--glass-border);">
+                                    <i class="bi bi-filetype-csv me-1"></i>CSV
+                                </button>
+                                <button class="btn btn-outline-light btn-sm" id="btn-export-pdf" style="border-color:var(--glass-border);">
+                                    <i class="bi bi-filetype-pdf me-1"></i>PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container flex-grow-1" style="min-height: 300px;">
+                            <canvas id="historyChart"></canvas>
+                        </div>
+                        <div class="mt-3 text-end">
+                            <span class="badge bg-secondary p-2" id="stat-total-records">0 records</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Summary -->
+                <div class="col-xl-4 col-lg-5">
+                    <div id="section-report" class="glass-card p-4 h-100 d-flex flex-column">
+                        <h4 class="fw-bold mb-4" style="font-size:1.1rem;"><i class="bi bi-file-earmark-bar-graph me-2 text-info"></i>Weekly Summary</h4>
+                        <div class="row g-3 flex-grow-1 align-content-center text-center">
+                            <div class="col-6">
+                                <div class="p-3 rounded-3" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2);">
+                                    <div class="small text-muted mb-1">Safe Days</div>
+                                    <div class="fs-3 fw-bold" style="color:#10b981;" id="safe-days">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3" style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2);">
+                                    <div class="small text-muted mb-1">Warning</div>
+                                    <div class="fs-3 fw-bold" style="color:#f59e0b;" id="warning-days">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);">
+                                    <div class="small text-muted mb-1">Critical</div>
+                                    <div class="fs-3 fw-bold" style="color:#ef4444;" id="critical-days">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 rounded-3" style="background:rgba(14,165,233,0.1); border:1px solid rgba(14,165,233,0.2);">
+                                    <div class="small text-muted mb-1">Total Logs</div>
+                                    <div class="fs-3 fw-bold" style="color:#0ea5e9;" id="total-readings">--</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Approvals -->
+            <div id="approvals" class="mb-5">
+                <h4 class="fw-bold mb-3"><i class="bi bi-person-check me-2 text-primary"></i>Pending User Approvals</h4>
+                <div class="glass-card p-0" style="overflow-x: auto;">
+                    <table class="table text-white mb-0" style="background: transparent;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                                <th class="py-3 px-4">Name</th>
+                                <th class="py-3 px-4">Email</th>
+                                <th class="py-3 px-4">Requested On</th>
+                                <th class="py-3 px-4 text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-users-list">
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">No pending approvals</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Thresholds Control (Optional if hardware overrides this) -->
+            <div id="settings" class="mb-5">
+                <h4 class="fw-bold mb-3"><i class="bi bi-sliders me-2 text-warning"></i>Safety Threshold Settings</h4>
                 <div class="glass-card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="mb-0"><i class="bi bi-people-fill me-2 text-info"></i>User Management</h4>
-                        <span class="badge bg-primary" id="total-user-count">0 users</span>
-                    </div>
-                    <p class="text-muted small mb-3">Approve new users, promote to admin, or demote. Changes take effect
-                        immediately.</p>
-                    <div class="table-responsive">
-                        <table class="table text-white mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pending-users-list">
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted">Loading users...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="row g-3">
+                        <div class="col-md-3 col-6">
+                            <label class="form-label small text-muted">pH Min <span class="text-info">(6.5 -
+                                    8.5)</span></label>
+                            <input type="number" class="form-control" id="thresh-ph-min" value="6.5" step="0.1" min="0"
+                                max="14">
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <label class="form-label small text-muted">TDS Max <span class="text-info">(< 300
+                                    ppm)</span></label>
+                            <input type="number" class="form-control" id="thresh-tds" value="300" step="10">
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <label class="form-label small text-muted">Turbidity Max <span class="text-info">(1 - 5
+                                    NTU)</span></label>
+                            <input type="number" class="form-control" id="thresh-turb" value="5" step="0.5" min="1" max="5">
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <label class="form-label small text-muted">Temp Max <span class="text-info">(20 - 35
+                                    °C)</span></label>
+                            <input type="number" class="form-control" id="thresh-temp" value="35" step="1" min="20"
+                                max="35">
+                        </div>
+                        <div class="col-md-9 col-6 d-flex align-items-end">
+                            <button class="btn btn-primary" id="save-thresholds-btn">
+                                <i class="bi bi-check-lg me-1"></i>Save Thresholds
+                            </button>
+                            <span class="ms-3 small" id="thresh-save-msg"></span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Reports and Exports -->
-            <div class="col-lg-6" id="reports">
-                <div class="glass-card p-4 h-100">
-                    <h4 class="mb-4">Data Export & Reports</h4>
-                    <p class="text-muted">Download sensor history for detailed analysis.</p>
-
-                    <div class="d-grid gap-3">
-                        <button class="btn btn-primary" id="btn-export-csv">
-                            <i class="bi bi-filetype-csv me-2"></i> Export Data to CSV
-                        </button>
-                        <button class="btn btn-outline-light" id="btn-export-pdf"
-                            style="border-color: var(--secondary); color: var(--secondary);">
-                            <i class="bi bi-filetype-pdf me-2"></i> Generate PDF Report
-                        </button>
+            <!-- Analytics Summary -->
+            <div id="section-analytics" class="mb-4">
+                <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line me-2 text-info"></i>Analytics Summary</h4>
+                <div class="row g-3">
+                    <div class="col-md-3 col-6">
+                        <div class="glass-card p-3 text-center">
+                            <small class="text-muted d-block mb-1">Avg pH</small>
+                            <span class="data-value fs-3" id="avg-ph" style="color: #0ea5e9;">--</span>
+                            <div class="small mt-1" id="trend-ph"></div>
+                        </div>
                     </div>
-
-                    <div class="mt-4 pt-3 border-top" style="border-color: var(--glass-border) !important;">
-                        <div class="d-flex justify-content-between text-muted">
-                            <span>Total Users: <strong id="stat-total-users" class="text-white">--</strong></span>
-                            <span>Total Records: <strong id="stat-total-records" class="text-white">--</strong></span>
+                    <div class="col-md-3 col-6">
+                        <div class="glass-card p-3 text-center">
+                            <small class="text-muted d-block mb-1">Avg TDS</small>
+                            <span class="data-value fs-3" id="avg-tds" style="color: #8b5cf6;">--</span>
+                            <div class="small mt-1" id="trend-tds"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="glass-card p-3 text-center">
+                            <small class="text-muted d-block mb-1">Avg Turbidity</small>
+                            <span class="data-value fs-3" id="avg-turb" style="color: #10b981;">--</span>
+                            <div class="small mt-1" id="trend-turb"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="glass-card p-3 text-center">
+                            <small class="text-muted d-block mb-1">Avg Temp</small>
+                            <span class="data-value fs-3" id="avg-temp" style="color: #f59e0b;">--</span>
+                            <div class="small mt-1" id="trend-temp"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Custom Threshold Config -->
-        <div id="section-thresholds" class="mb-4">
-            <h4 class="fw-bold mb-3"><i class="bi bi-sliders me-2 text-warning"></i>Custom Safe Limits</h4>
-            <div class="glass-card p-4">
-                <p class="text-muted mb-3">Adjust water quality safe thresholds. Changes apply to intelligence analysis.
-                </p>
-                <div class="row g-3">
-                    <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">pH Min <span class="text-info">(6.5 -
-                                7.5)</span></label>
-                        <input type="number" class="form-control" id="thresh-ph-min" value="6.5" step="0.1" min="6.5"
-                            max="7.5">
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">pH Max <span class="text-info">(7.5 -
-                                8.5)</span></label>
-                        <input type="number" class="form-control" id="thresh-ph-max" value="8.5" step="0.1" min="7.5"
-                            max="8.5">
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">TDS Max <span class="text-info">(50 - 300
-                                ppm)</span></label>
-                        <input type="number" class="form-control" id="thresh-tds" value="300" step="10" min="50"
-                            max="300">
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">Turbidity Max <span class="text-info">(1 - 5
-                                NTU)</span></label>
-                        <input type="number" class="form-control" id="thresh-turb" value="5" step="0.5" min="1" max="5">
-                    </div>
-                    <div class="col-md-3 col-6">
-                        <label class="form-label small text-muted">Temp Max <span class="text-info">(20 - 35
-                                °C)</span></label>
-                        <input type="number" class="form-control" id="thresh-temp" value="35" step="1" min="20"
-                            max="35">
-                    </div>
-                    <div class="col-md-9 col-6 d-flex align-items-end">
-                        <button class="btn btn-primary" id="save-thresholds-btn">
-                            <i class="bi bi-check-lg me-1"></i>Save Thresholds
-                        </button>
-                        <span class="ms-3 small" id="thresh-save-msg"></span>
-                    </div>
-                </div>
+        <!-- Auth Logs View (Hidden initially) -->
+        <div id="view-authlogs" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0"><i class="bi bi-person-lines-fill me-2 text-primary"></i>Authentication Logs</h4>
+            </div>
+            
+            <div class="glass-card p-0" style="overflow-x: auto; max-height: 600px; overflow-y: auto;">
+                <table class="table text-white mb-0" style="background: transparent;">
+                    <thead style="position: sticky; top: 0; background: rgba(15,23,42,0.9); z-index: 10;">
+                        <tr style="border-bottom: 2px solid rgba(255,255,255,0.1);">
+                            <th class="py-3 px-4">Date & Time</th>
+                            <th class="py-3 px-4">Name</th>
+                            <th class="py-3 px-4">Email</th>
+                            <th class="py-3 px-4">Role</th>
+                            <th class="py-3 px-4 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auth-logs-table-body">
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">Loading logs...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <!-- Analytics Summary -->
-        <div id="section-analytics" class="mb-4">
-            <h4 class="fw-bold mb-3"><i class="bi bi-bar-chart-line me-2 text-info"></i>Analytics Summary</h4>
-            <div class="row g-3">
-                <div class="col-md-3 col-6">
-                    <div class="glass-card p-3 text-center">
-                        <small class="text-muted d-block mb-1">Avg pH</small>
-                        <span class="data-value fs-3" id="avg-ph" style="color: #0ea5e9;">--</span>
-                        <div class="small mt-1" id="trend-ph"></div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="glass-card p-3 text-center">
-                        <small class="text-muted d-block mb-1">Avg TDS</small>
-                        <span class="data-value fs-3" id="avg-tds" style="color: #8b5cf6;">--</span>
-                        <div class="small mt-1" id="trend-tds"></div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="glass-card p-3 text-center">
-                        <small class="text-muted d-block mb-1">Avg Turbidity</small>
-                        <span class="data-value fs-3" id="avg-turb" style="color: #10b981;">--</span>
-                        <div class="small mt-1" id="trend-turb"></div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="glass-card p-3 text-center">
-                        <small class="text-muted d-block mb-1">Avg Temp</small>
-                        <span class="data-value fs-3" id="avg-temp" style="color: #f59e0b;">--</span>
-                        <div class="small mt-1" id="trend-temp"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <!-- Mobile Bottom Nav -->
