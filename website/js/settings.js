@@ -31,6 +31,15 @@ function saveSettings(settings) {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 }
 
+// Apply theme to document immediately
+function applyTheme(isDark) {
+    if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+    }
+}
+
 // Apply to UI
 function applyToUI(settings) {
     document.getElementById('theme-toggle').checked = settings.darkMode;
@@ -60,6 +69,19 @@ onAuthStateChanged(auth, async (user) => {
 // Init
 const settings = loadSettings();
 applyToUI(settings);
+applyTheme(settings.darkMode);
+
+// Live preview: apply theme instantly on toggle change
+document.getElementById('theme-toggle').addEventListener('change', (e) => {
+    applyTheme(e.target.checked);
+    // Auto-save so toggling persists immediately across all pages
+    const current = loadSettings();
+    current.darkMode = e.target.checked;
+    saveSettings(current);
+    // Update description label
+    const label = e.target.closest('.settings-row')?.querySelector('small');
+    if (label) label.textContent = e.target.checked ? 'Use dark theme (default)' : 'Light theme active';
+});
 
 // Push notification toggle
 document.getElementById('notif-push').addEventListener('change', async (e) => {
@@ -88,13 +110,7 @@ document.getElementById('save-settings-btn').addEventListener('click', () => {
     };
 
     saveSettings(newSettings);
-
-    // Apply theme immediately
-    if (newSettings.darkMode) {
-        document.documentElement.removeAttribute('data-theme');
-    } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-    }
+    applyTheme(newSettings.darkMode);
 
     const msg = document.getElementById('save-msg');
     msg.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> Settings saved!</span>';

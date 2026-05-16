@@ -3,11 +3,23 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Settings - AquaSense</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <script src="js/theme-loader.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        @media (max-width: 575px) {
+            .container.py-5 { padding: 20px 12px !important; }
+            .glass-card.p-4 { padding: 16px 12px !important; }
+            .settings-row { padding: 10px 12px !important; }
+            .settings-row .form-check-input { width: 2.4em !important; height: 1.25em !important; }
+            h2.fw-bold { font-size: 1.4rem; }
+            h5.fw-bold { font-size: 1rem; }
+            select#chart-points { max-width: 100% !important; width: 100%; }
+        }
+    </style>
 </head>
 
 <body>
@@ -34,8 +46,7 @@
         <!-- Appearance -->
         <div class="glass-card p-4 mb-4">
             <h5 class="fw-bold mb-3"><i class="bi bi-palette me-2"></i>Appearance</h5>
-            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
-                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2 settings-row">
                 <div>
                     <span style="color: var(--text-main);">Dark Mode</span>
                     <small class="d-block text-muted">Use dark theme (default)</small>
@@ -45,8 +56,7 @@
                         style="cursor: pointer; width: 3em; height: 1.5em;">
                 </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
-                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2 settings-row">
                 <div>
                     <span style="color: var(--text-main);">Compact View</span>
                     <small class="d-block text-muted">Reduce card spacing</small>
@@ -61,8 +71,7 @@
         <!-- Notifications -->
         <div class="glass-card p-4 mb-4">
             <h5 class="fw-bold mb-3"><i class="bi bi-bell me-2"></i>Notifications</h5>
-            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
-                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2 settings-row">
                 <div>
                     <span style="color: var(--text-main);">Alert Notifications</span>
                     <small class="d-block text-muted">Show alerts when parameters exceed limits</small>
@@ -72,8 +81,7 @@
                         style="cursor: pointer; width: 3em; height: 1.5em;">
                 </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
-                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2 settings-row">
                 <div>
                     <span style="color: var(--text-main);">Sound Alerts</span>
                     <small class="d-block text-muted">Play sound on danger alerts</small>
@@ -83,8 +91,7 @@
                         style="cursor: pointer; width: 3em; height: 1.5em;">
                 </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
-                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2 settings-row">
                 <div>
                     <span style="color: var(--text-main);">Browser Notifications</span>
                     <small class="d-block text-muted">Get push notifications in browser</small>
@@ -99,8 +106,7 @@
         <!-- Data Preferences -->
         <div class="glass-card p-4 mb-4">
             <h5 class="fw-bold mb-3"><i class="bi bi-database me-2"></i>Data Preferences</h5>
-            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
-                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+            <div class="d-flex justify-content-between align-items-center p-3 rounded mb-2 settings-row">
                 <div>
                     <span style="color: var(--text-main);">Auto-Refresh</span>
                     <small class="d-block text-muted">Auto-update dashboard data</small>
@@ -110,8 +116,7 @@
                         style="cursor: pointer; width: 3em; height: 1.5em;">
                 </div>
             </div>
-            <div class="p-3 rounded mb-2"
-                style="background: rgba(15,23,42,0.5); border:1px solid var(--glass-border); border-radius:10px;">
+            <div class="p-3 rounded mb-2 settings-row">
                 <label class="form-label mb-1" style="color: var(--text-main);">Chart Data Points</label>
                 <small class="d-block text-muted mb-2">Number of readings in history graph</small>
                 <select class="form-control" id="chart-points" style="max-width: 200px;">

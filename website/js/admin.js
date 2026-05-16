@@ -352,10 +352,19 @@ function updateBadge(badgeEl, statusObj) {
 }
 
 // Chart.js Setup
+function getChartThemeColors() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    return {
+        text: isLight ? '#334155' : '#94a3b8',
+        grid: isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)'
+    };
+}
+
 function initChart() {
     const ctx = elements.historyChartCanvas.getContext('2d');
+    const theme = getChartThemeColors();
 
-    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.color = theme.text;
     Chart.defaults.font.family = "'Outfit', sans-serif";
 
     historyChart = new Chart(ctx, {
@@ -364,7 +373,7 @@ function initChart() {
             labels: [],
             datasets: [
                 { label: 'pH', data: [], borderColor: '#0ea5e9', tension: 0.4 },
-                { label: 'TDS ( / 10)', data: [], borderColor: '#8b5cf6', tension: 0.4 }, // Scaled down for visual layout
+                { label: 'TDS ( / 10)', data: [], borderColor: '#8b5cf6', tension: 0.4 },
                 { label: 'Turbidity', data: [], borderColor: '#10b981', tension: 0.4 },
                 { label: 'Temp', data: [], borderColor: '#f59e0b', tension: 0.4 }
             ]
@@ -376,11 +385,22 @@ function initChart() {
                 legend: { position: 'top' }
             },
             scales: {
-                y: { grid: { color: 'rgba(255,255,255,0.05)' } },
-                x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                y: { grid: { color: theme.grid } },
+                x: { grid: { color: theme.grid } }
             }
         }
     });
+
+    // Watch for theme changes and recolour chart immediately
+    new MutationObserver(() => {
+        const t = getChartThemeColors();
+        if (historyChart) {
+            historyChart.options.scales.y.grid.color = t.grid;
+            historyChart.options.scales.x.grid.color = t.grid;
+            historyChart.update('none');
+        }
+        Chart.defaults.color = t.text;
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 function updateChart(dataList) {

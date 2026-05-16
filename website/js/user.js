@@ -254,10 +254,20 @@ function updateBadge(badgeEl, statusObj) {
 let userChart;
 let allHistoryData = [];
 
+// Returns chart color palette depending on current theme
+function getChartThemeColors() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    return {
+        text: isLight ? '#334155' : '#cbd5e1',
+        grid: isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.05)'
+    };
+}
+
 function initUserChart() {
     const ctx = document.getElementById('userHistoryChart').getContext('2d');
+    const theme = getChartThemeColors();
 
-    Chart.defaults.color = '#cbd5e1';
+    Chart.defaults.color = theme.text;
     Chart.defaults.font.family = "'Outfit', sans-serif";
 
     userChart = new Chart(ctx, {
@@ -278,11 +288,22 @@ function initUserChart() {
                 legend: { position: 'top' }
             },
             scales: {
-                y: { grid: { color: 'rgba(255,255,255,0.05)' } },
-                x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                y: { grid: { color: getChartThemeColors().grid } },
+                x: { grid: { color: getChartThemeColors().grid } }
             }
         }
     });
+
+    // Watch for theme changes and recolour chart immediately
+    new MutationObserver(() => {
+        const t = getChartThemeColors();
+        if (userChart) {
+            userChart.options.scales.y.grid.color = t.grid;
+            userChart.options.scales.x.grid.color = t.grid;
+            userChart.update('none');
+        }
+        Chart.defaults.color = t.text;
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 function listenToHistory() {

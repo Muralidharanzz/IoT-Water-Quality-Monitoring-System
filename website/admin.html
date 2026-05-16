@@ -3,26 +3,84 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Admin Dashboard - AquaSense</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <script src="js/theme-loader.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* ── Admin Mobile Header Compact Fixes ── */
+        @media (max-width: 991px) {
+            .header-row {
+                flex-wrap: nowrap !important;
+                gap: 6px !important;
+                overflow: visible;
+            }
+            .header-greeting h2 { font-size: 1.15rem !important; }
+            .header-greeting p  { font-size: 0.72rem !important; }
+            #last-updated-pill  {
+                font-size: 0.7rem !important;
+                padding: 4px 8px !important;
+                white-space: nowrap;
+                max-width: 140px;
+                overflow: hidden;
+            }
+            #last-updated {
+                max-width: 95px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: inline-block;
+                white-space: nowrap;
+            }
+            .online-badge { font-size: 0.68rem !important; padding: 3px 7px !important; height: 28px !important; }
+        }
+        @media (max-width: 390px) {
+            #last-updated-pill { display: none !important; }
+        }
+        /* ── Notification dropdown ── */
+        @media (max-width: 480px) {
+            #notif-dropdown {
+                position: fixed !important;
+                right: 8px !important;
+                left: 8px !important;
+                top: auto !important;
+                bottom: calc(72px + env(safe-area-inset-bottom)) !important;
+                width: auto !important;
+                max-height: 55vh;
+                z-index: 1050;
+            }
+        }
+        /* ── Mobile bottom nav active ── */
+        .mobile-bottom-nav .nav-item.active {
+            color: var(--primary);
+            background: rgba(14,165,233,0.12);
+            border-radius: 10px;
+        }
+        .mobile-bottom-nav .nav-item {
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* ── Sidebar overlay ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 998;
+            backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.active { display: block; }
+    </style>
 </head>
 
 <body>
 
-    <!-- Mobile Sidebar Toggle -->
-    <button class="btn btn-outline-light d-lg-none position-fixed" id="sidebar-toggle"
-        style="top: 15px; left: 15px; z-index: 1050; border-color: var(--glass-border);">
-        <i class="bi bi-list fs-4"></i>
-    </button>
-    <div id="sidebar-overlay" class="d-none" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;">
-    </div>
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -84,9 +142,6 @@
         </div>
     </div>
 
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
     <!-- Main Content -->
     <div class="main-content">
         <!-- ── Header ── -->
@@ -134,7 +189,7 @@
 
                 <!-- Online badge -->
                 <span id="connection-status" class="status-badge status-safe online-badge d-flex align-items-center" style="height:36px; white-space:nowrap; font-size:0.8rem;">
-                    <i class="bi bi-wifi me-1"></i>Online
+                    <i class="bi bi-wifi me-1"></i><span class="status-text">Online</span>
                 </span>
             </div>
         </div>
@@ -438,26 +493,27 @@
     </div>
 
     <!-- Mobile Bottom Nav -->
-    <nav class="mobile-bottom-nav">
+    <nav class="mobile-bottom-nav" role="navigation" aria-label="Bottom navigation">
         <div class="nav-items">
-            <button class="nav-item active"
-                onclick="document.getElementById('section-overview')?.scrollIntoView({behavior:'smooth'})">
-                <i class="bi bi-speedometer2"></i>Overview
+            <button class="nav-item active" id="bnav-overview" aria-label="Overview">
+                <i class="bi bi-speedometer2"></i>
+                <span>Overview</span>
             </button>
-            <button class="nav-item"
-                onclick="document.getElementById('section-intelligence')?.scrollIntoView({behavior:'smooth'})">
-                <i class="bi bi-droplet-half"></i>Quality
+            <button class="nav-item" id="bnav-quality" aria-label="Water Quality">
+                <i class="bi bi-droplet-half"></i>
+                <span>Quality</span>
             </button>
-            <button class="nav-item"
-                onclick="document.getElementById('section-history')?.scrollIntoView({behavior:'smooth'})">
-                <i class="bi bi-graph-up"></i>History
+            <button class="nav-item" id="bnav-history" aria-label="History">
+                <i class="bi bi-graph-up"></i>
+                <span>History</span>
             </button>
-            <button class="nav-item"
-                onclick="document.getElementById('section-users')?.scrollIntoView({behavior:'smooth'})">
-                <i class="bi bi-people"></i>Users
+            <button class="nav-item" id="bnav-users" aria-label="Users">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
             </button>
-            <button class="nav-item" id="mobile-menu-toggle">
-                <i class="bi bi-three-dots"></i>More
+            <button class="nav-item" id="bnav-more" aria-label="More">
+                <i class="bi bi-three-dots"></i>
+                <span>More</span>
             </button>
         </div>
     </nav>
@@ -470,19 +526,66 @@
         })();
 
         document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.querySelector('.sidebar');
+            const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             const menuBtn = document.getElementById('mobile-menu-btn');
-            const moreBtn = document.getElementById('mobile-menu-toggle');
 
-            function toggleSidebar() {
-                sidebar?.classList.toggle('active');
-                overlay?.classList.toggle('active');
-            }
+            function openSidebar()  { sidebar?.classList.add('active'); overlay?.classList.add('active'); document.body.style.overflow = 'hidden'; }
+            function closeSidebar() { sidebar?.classList.remove('active'); overlay?.classList.remove('active'); document.body.style.overflow = ''; }
 
-            menuBtn?.addEventListener('click', toggleSidebar);
-            moreBtn?.addEventListener('click', toggleSidebar);
-            overlay?.addEventListener('click', toggleSidebar);
+            menuBtn?.addEventListener('click', () => sidebar?.classList.contains('active') ? closeSidebar() : openSidebar());
+            overlay?.addEventListener('click', closeSidebar);
+
+            // Close sidebar when a link is clicked on mobile
+            sidebar?.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', () => { if (window.innerWidth < 992) closeSidebar(); });
+            });
+
+            // Bottom nav scroll map
+            const sectionMap = {
+                'bnav-overview': 'overview',
+                'bnav-quality':  'section-intelligence',
+                'bnav-history':  'history',
+                'bnav-users':    'approvals',
+                'bnav-more':     null
+            };
+
+            document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    if (this.id === 'bnav-more') { openSidebar(); return; }
+                    const targetId = sectionMap[this.id];
+                    if (targetId) {
+                        const el = document.getElementById(targetId);
+                        if (el) {
+                            const navH = document.querySelector('.mobile-bottom-nav')?.offsetHeight || 70;
+                            const top = el.getBoundingClientRect().top + window.scrollY - navH - 12;
+                            window.scrollTo({ top, behavior: 'smooth' });
+                        }
+                    }
+                    document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Auto-highlight bottom nav on scroll
+            const sections = [
+                { id: 'overview',            btn: 'bnav-overview' },
+                { id: 'section-intelligence', btn: 'bnav-quality'  },
+                { id: 'history',              btn: 'bnav-history'  },
+                { id: 'approvals',            btn: 'bnav-users'    },
+            ];
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const match = sections.find(s => s.id === entry.target.id);
+                        if (match) {
+                            document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(b => b.classList.remove('active'));
+                            document.getElementById(match.btn)?.classList.add('active');
+                        }
+                    }
+                });
+            }, { threshold: 0.25 });
+            sections.forEach(s => { const el = document.getElementById(s.id); if (el) observer.observe(el); });
         });
     </script>
 

@@ -697,121 +697,748 @@ body::after {
   }
 }
 
+/* ==================== COMPREHENSIVE MOBILE RESPONSIVENESS ==================== */
+
+/* ── Main content padding on mobile ── */
+@media (max-width: 991px) {
+  .main-content {
+    padding: 16px 12px calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* ── Header row: prevent overflow on all phones ── */
+@media (max-width: 767px) {
+  .header-row {
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    align-items: center;
+  }
+
+  .header-greeting h2 {
+    font-size: 1.1rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .header-greeting p {
+    font-size: 0.72rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Last-updated pill: shrink on small screens */
+  #last-updated-pill {
+    font-size: 0.7rem !important;
+    padding: 4px 8px !important;
+    height: 32px !important;
+    white-space: nowrap;
+    max-width: 130px;
+    overflow: hidden;
+  }
+
+  #last-updated {
+    font-size: 0.68rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 90px;
+    display: inline-block;
+  }
+
+  /* Notification bell: keep touch-friendly */
+  #notif-bell-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  /* Online badge */
+  .online-badge {
+    font-size: 0.68rem !important;
+    padding: 3px 7px !important;
+    height: 28px !important;
+    white-space: nowrap;
+  }
+
+  /* Connection status text — hide label, keep icon */
+  #connection-status .status-text {
+    display: none;
+  }
+}
+
+/* ── Notification dropdown: full-width on phones ── */
+@media (max-width: 480px) {
+  #notif-dropdown {
+    position: fixed !important;
+    right: 8px !important;
+    left: 8px !important;
+    top: auto !important;
+    bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+    max-height: 60vh;
+  }
+}
+
+/* ── Data value font scaling on small cards ── */
+@media (max-width: 575px) {
+  .data-value {
+    font-size: 1.9rem !important;
+    letter-spacing: -1px;
+  }
+
+  /* Sensor cards: 2 per row */
+  .col-6.col-md-3 .glass-card {
+    padding: 12px 10px !important;
+  }
+
+  .col-6.col-md-3 h6 {
+    font-size: 0.65rem !important;
+  }
+
+  .col-6.col-md-3 .status-badge {
+    font-size: 0.7rem;
+    padding: 4px 7px;
+  }
+}
+
+/* ── Chart container: reduce height on phones ── */
+@media (max-width: 575px) {
+  .chart-container {
+    height: 220px !important;
+    min-height: 180px !important;
+  }
+}
+
+/* ── Water Intelligence grid: single col on phones ── */
+@media (max-width: 767px) {
+  .wq-intelligence-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .wq-gauge {
+    width: 180px;
+    height: 110px;
+  }
+
+  .wq-status-label {
+    font-size: 1.3rem;
+  }
+
+  .wq-rec-box {
+    padding: 14px 12px;
+  }
+
+  .wq-rec-icon-wrap {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+}
+
+/* ── Disease cards grid: 1 column on phones ── */
+@media (max-width: 575px) {
+  .wq-disease-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Admin tables: horizontal scroll + readable on mobile ── */
+@media (max-width: 767px) {
+  #approvals .glass-card,
+  #view-authlogs .glass-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #approvals table th,
+  #approvals table td,
+  #view-authlogs table th,
+  #view-authlogs table td {
+    white-space: nowrap;
+    padding: 8px 10px !important;
+    font-size: 0.8rem;
+  }
+}
+
+/* ── Admin: Safety threshold inputs — 2-col on phones ── */
+@media (max-width: 575px) {
+  #settings .col-md-3.col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  #settings .col-md-9.col-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* ── Analytics summary: 2-col on phones ── */
+@media (max-width: 575px) {
+  #section-analytics .col-md-3.col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  #section-analytics .data-value.fs-3 {
+    font-size: 1.4rem !important;
+  }
+}
+
+/* ── Quick stats cards (admin): 2-col on phones ── */
+@media (max-width: 575px) {
+  .row.g-3.mb-4 .col-6.col-md-3 .glass-card.text-center {
+    padding: 10px 8px !important;
+  }
+
+  .row.g-3.mb-4 .col-6.col-md-3 h4 {
+    font-size: 1.2rem;
+  }
+}
+
+/* ── History + Weekly Summary: stack on small tablets ── */
+@media (max-width: 767px) {
+  .col-xl-8.col-lg-7,
+  .col-xl-4.col-lg-5 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* ── Alert banner: compact on mobile ── */
+@media (max-width: 575px) {
+  .alert-banner {
+    padding: 10px 14px;
+    gap: 10px;
+    font-size: 0.85rem;
+  }
+  .alert-banner .bi {
+    font-size: 1.1rem !important;
+  }
+}
+
+/* ── Index Landing Page: mobile hero ── */
+@media (max-width: 767px) {
+  .hero-section .display-3 {
+    font-size: 2rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .hero-section .lead {
+    font-size: 0.95rem !important;
+  }
+
+  .hero-section .stat-number {
+    font-size: 1.8rem !important;
+  }
+
+  /* Hero mini-card grid: show 2 cols */
+  .hero-section .col-lg-6.hero-float {
+    margin-top: 24px;
+  }
+
+  /* CTA section: reduce padding */
+  .cta-section {
+    padding: 28px 20px !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .hero-section .display-3 {
+    font-size: 1.7rem !important;
+  }
+
+  .hero-section .d-flex.gap-3.mb-4 {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+
+  .hero-section .btn-lg {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+
+  .hero-section .d-flex.gap-4 {
+    gap: 16px !important;
+  }
+}
+
+/* ── About page: mobile ── */
+@media (max-width: 767px) {
+  .auth-container[style*="padding: 60px"] {
+    padding: 32px 16px 24px !important;
+  }
+
+  .container.pb-5 {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .container.pb-5 .glass-card {
+    padding: 16px !important;
+  }
+
+  /* Disease grid in about page: 2 cols on sm, 1 col on xs */
+  #about-disease-grid .col-xl-4.col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  #about-disease-grid .col-xl-4.col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .display-4 {
+    font-size: 2rem !important;
+  }
+}
+
+/* ── Settings page: mobile ── */
+@media (max-width: 767px) {
+  .container.py-5[style*="max-width: 700px"] {
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .settings-row {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .settings-row .form-check-input {
+    width: 2.5em !important;
+    height: 1.3em !important;
+  }
+}
+
+/* ── Profile page: mobile ── */
+@media (max-width: 575px) {
+  .auth-box.glass-card {
+    padding: 24px 16px !important;
+  }
+
+  .auth-box .input-group {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ── Navbar (about/settings/profile): mobile ── */
+@media (max-width: 575px) {
+  .navbar .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .navbar .navbar-brand .fs-3 {
+    font-size: 1.4rem !important;
+  }
+
+  .navbar .btn-sm {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+}
+
+/* ── Water Quality status header: compact on mobile ── */
+@media (max-width: 575px) {
+  .wq-status-header {
+    padding: 18px 14px;
+  }
+
+  .wq-status-icon {
+    font-size: 2.2rem;
+  }
+
+  .wq-status-label {
+    font-size: 1.15rem;
+  }
+}
+
+/* ── param detail table: scrollable on phones ── */
+@media (max-width: 575px) {
+  .table-responsive-stack {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-responsive-stack table {
+    min-width: 360px;
+  }
+}
+
+/* ── Sensor map: minimum height on mobile ── */
+@media (max-width: 575px) {
+  #sensor-map {
+    min-height: 200px !important;
+  }
+}
+
+/* ── Bottom nav: safe area + proper height ── */
+@media (max-width: 991px) {
+  .mobile-bottom-nav {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .mobile-bottom-nav .nav-item {
+    min-width: 48px;
+    min-height: 48px;
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+
+  .mobile-bottom-nav .nav-item i {
+    font-size: 1.2rem;
+  }
+}
+
+/* ── Fix glass-card hover lift on touch (prevents layout shift) ── */
+@media (hover: none) {
+  .glass-card:hover {
+    transform: none !important;
+  }
+
+  .feature-card:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
+  }
+
+  .wq-disease-card:hover {
+    transform: none !important;
+  }
+}
+
+/* ── Admin sidebar: remove old fixed toggle button ── */
+@media (max-width: 991px) {
+  #sidebar-toggle {
+    display: none !important;
+  }
+}
+
+/* ── Prevent horizontal scroll on all pages ── */
+body {
+  overflow-x: hidden !important;
+}
+
+.main-content {
+  max-width: 100%;
+}
+
+/* ── Calibration inputs (admin only): stack on phones ── */
+@media (max-width: 575px) {
+  #view-dashboard .glass-card .input-group {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  #view-dashboard .glass-card .input-group .form-control {
+    border-radius: 8px !important;
+  }
+
+  #view-dashboard .glass-card .input-group .btn {
+    border-radius: 8px !important;
+    width: 100%;
+  }
+}
+
+/* ── Weekly summary: always 2×2 grid ── */
+@media (max-width: 575px) {
+  #section-report .col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  #section-report .fs-3 {
+    font-size: 1.5rem !important;
+  }
+}
+
 /* ==================== LIGHT THEME ==================== */
 [data-theme="light"] {
   --primary: #0284c7;
   --primary-hover: #0369a1;
   --secondary: #7c3aed;
   --dark: #f8fafc;
-  --dark-card: rgba(255, 255, 255, 0.85);
+  --dark-card: rgba(255, 255, 255, 0.88);
   --text-main: #1e293b;
   --text-muted: #64748b;
   --text-placeholder: #94a3b8;
   --success: #059669;
   --warning: #d97706;
   --danger: #dc2626;
-  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-border: rgba(0, 0, 0, 0.08);
 }
 
-/* Light mode: override html background (the root layer) */
+/* ── Background ── */
 html[data-theme="light"] {
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #ede9fe 100%);
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 40%, #ede9fe 100%);
 }
 
-[data-theme="light"] body {
-  color: var(--text-main);
-}
+[data-theme="light"] body { color: var(--text-main); }
 
 [data-theme="light"] body::before {
   background: radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%);
 }
-
 [data-theme="light"] body::after {
   background: radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%);
 }
 
-[data-theme="light"] .data-value {
-  background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 6px rgba(2,132,199,0.2));
-}
-
+/* ── Glass Card & Sidebar ── */
 [data-theme="light"] .glass-card,
 [data-theme="light"] .sidebar {
   background: var(--dark-card);
   border-color: var(--glass-border);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0,0,0,0.03);
+}
+[data-theme="light"] .glass-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(14,165,233,0.12);
+}
+[data-theme="light"] .sidebar {
+  border-right-color: #e2e8f0;
 }
 
-[data-theme="light"] .form-control {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: #e2e8f0;
-  color: var(--text-main);
-}
-
-[data-theme="light"] .form-control:focus {
-  background: #fff;
-  border-color: var(--primary);
-}
-
-[data-theme="light"] .sidebar-link {
-  color: #475569;
-}
-
-[data-theme="light"] .sidebar-link:hover,
-[data-theme="light"] .sidebar-link.active {
-  background: rgba(14, 165, 233, 0.1);
-  color: var(--primary);
-}
-
-[data-theme="light"] .text-muted {
-  color: #64748b !important;
-}
-
-[data-theme="light"] .text-white {
-  color: #1e293b !important;
-}
-
+/* ── Typography ── */
+[data-theme="light"] .text-muted { color: #64748b !important; }
+[data-theme="light"] .text-white { color: #1e293b !important; }
 [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3,
 [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6 {
   color: #0f172a;
 }
 
-[data-theme="light"] .alert-banner {
-  background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  color: #991b1b;
-}
-
+/* ── Data Values ── */
 [data-theme="light"] .data-value {
-  color: #0f172a;
+  background: linear-gradient(135deg, #0f172a 0%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 4px rgba(2,132,199,0.15));
 }
 
-[data-theme="light"] .wq-disease-info h6 {
-  color: #1e293b;
+/* ── Status Badges ── */
+[data-theme="light"] .status-safe {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+  border-color: #059669;
+}
+[data-theme="light"] .status-warning {
+  background: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+  border-color: #d97706;
+}
+[data-theme="light"] .status-danger {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
+  border-color: #dc2626;
 }
 
-[data-theme="light"] .param-table td,
-[data-theme="light"] .param-table th {
-  color: #334155;
+/* ── Sidebar Links ── */
+[data-theme="light"] .sidebar-link { color: #475569 !important; }
+[data-theme="light"] .sidebar-link:hover {
+  background: rgba(14, 165, 233, 0.08) !important;
+  color: #0284c7 !important;
+}
+[data-theme="light"] .sidebar-link.active {
+  background: rgba(14, 165, 233, 0.12) !important;
+  border-color: rgba(14, 165, 233, 0.25) !important;
+  color: #0284c7 !important;
+  box-shadow: inset 3px 0 0 #0284c7, 0 0 8px rgba(14,165,233,0.06);
+}
+
+/* ── Forms ── */
+[data-theme="light"] .form-control {
+  background: #ffffff;
   border-color: #e2e8f0;
+  color: var(--text-main);
 }
+[data-theme="light"] .form-control:focus {
+  background: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.25rem rgba(2, 132, 199, 0.15);
+}
+[data-theme="light"] .form-control::placeholder { color: #94a3b8; }
 
+/* ── Buttons ── */
 [data-theme="light"] .btn-outline-light {
   border-color: #cbd5e1;
   color: #475569;
 }
-
 [data-theme="light"] .btn-outline-light:hover {
   background: #f1f5f9;
   color: #0f172a;
+  border-color: #94a3b8;
+}
+[data-theme="light"] .btn-outline-secondary {
+  border-color: #cbd5e1;
+  color: #475569;
 }
 
-[data-theme="light"] select option {
-  background: #fff;
-  color: #1e293b;
+/* ── Tables ── */
+[data-theme="light"] .table { color: #334155; }
+[data-theme="light"] .table thead th { color: #64748b; border-bottom-color: #e2e8f0; }
+[data-theme="light"] .table td,
+[data-theme="light"] .table th { border-color: #f1f5f9; color: #334155; background: transparent; }
+[data-theme="light"] .param-table td,
+[data-theme="light"] .param-table th { color: #334155; border-color: #e2e8f0; }
+
+/* ── Alert Banner ── */
+[data-theme="light"] .alert-banner {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border-color: #fca5a5;
+  color: #991b1b;
 }
+
+/* ── Loader ── */
+[data-theme="light"] .loader {
+  border-color: rgba(0, 0, 0, 0.08);
+  border-top-color: var(--primary);
+}
+
+/* ── Select options ── */
+[data-theme="light"] select option { background: #fff; color: #1e293b; }
+
+/* ── Water Intelligence Overrides ── */
+[data-theme="light"] .wq-status-header.wq-safe {
+  background: linear-gradient(135deg, rgba(5,150,105,0.08), rgba(5,150,105,0.02));
+  border-color: rgba(5,150,105,0.2);
+}
+[data-theme="light"] .wq-status-header.wq-slight {
+  background: linear-gradient(135deg, rgba(217,119,6,0.08), rgba(217,119,6,0.02));
+  border-color: rgba(217,119,6,0.2);
+}
+[data-theme="light"] .wq-status-header.wq-moderate {
+  background: linear-gradient(135deg, rgba(234,88,12,0.08), rgba(234,88,12,0.02));
+  border-color: rgba(234,88,12,0.2);
+}
+[data-theme="light"] .wq-status-header.wq-high {
+  background: linear-gradient(135deg, rgba(220,38,38,0.08), rgba(220,38,38,0.02));
+  border-color: rgba(220,38,38,0.2);
+}
+[data-theme="light"] .wq-status-header.wq-severe {
+  background: linear-gradient(135deg, rgba(185,28,28,0.1), rgba(185,28,28,0.03));
+  border-color: rgba(185,28,28,0.25);
+}
+
+[data-theme="light"] .wq-rec-box.wq-safe { background: rgba(5,150,105,0.06); border-color: rgba(5,150,105,0.15); }
+[data-theme="light"] .wq-rec-box.wq-slight { background: rgba(217,119,6,0.06); border-color: rgba(217,119,6,0.15); }
+[data-theme="light"] .wq-rec-box.wq-moderate { background: rgba(234,88,12,0.06); border-color: rgba(234,88,12,0.15); }
+[data-theme="light"] .wq-rec-box.wq-high { background: rgba(220,38,38,0.06); border-color: rgba(220,38,38,0.15); }
+[data-theme="light"] .wq-rec-box.wq-severe { background: rgba(185,28,28,0.06); border-color: rgba(185,28,28,0.15); }
+
+[data-theme="light"] .wq-param-ok {
+  background: rgba(5,150,105,0.1);
+  color: #047857;
+  border-color: rgba(5,150,105,0.2);
+}
+[data-theme="light"] .wq-param-bad {
+  background: rgba(220,38,38,0.1);
+  color: #b91c1c;
+  border-color: rgba(220,38,38,0.2);
+}
+
+[data-theme="light"] .wq-disease-card {
+  background: rgba(255,255,255,0.7);
+  border-color: rgba(0,0,0,0.06);
+}
+[data-theme="light"] .wq-disease-info h6 { color: #1e293b; }
+[data-theme="light"] .wq-no-disease p { color: #64748b; }
+
+/* ── Disease Modal Light ── */
+[data-theme="light"] .disease-modal-sheet {
+  background: linear-gradient(180deg, rgba(248,250,252,0.99) 0%, rgba(241,245,249,0.99) 100%);
+  border-color: #e2e8f0;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+}
+[data-theme="light"] .disease-modal-backdrop { background: rgba(0,0,0,0.3); }
+[data-theme="light"] .disease-modal-name { color: #0f172a; }
+[data-theme="light"] .disease-modal-desc,
+[data-theme="light"] .disease-symptom-list li,
+[data-theme="light"] .disease-precaution-box p { color: #475569; }
+[data-theme="light"] .disease-modal-close {
+  background: rgba(0,0,0,0.04);
+  border-color: #e2e8f0;
+  color: #64748b;
+}
+[data-theme="light"] .disease-modal-handle { background: rgba(0,0,0,0.12); }
+[data-theme="light"] .disease-trigger-chip { background: rgba(0,0,0,0.04); }
+
+/* ── Mobile Bottom Nav ── */
+[data-theme="light"] .mobile-bottom-nav {
+  background: rgba(255,255,255,0.92);
+  border-top-color: #e2e8f0;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+}
+[data-theme="light"] .mobile-bottom-nav .nav-item { color: #64748b; }
+[data-theme="light"] .mobile-bottom-nav .nav-item.active,
+[data-theme="light"] .mobile-bottom-nav .nav-item:hover { color: #0284c7; background: rgba(2,132,199,0.08); }
+
+/* ── Sidebar Overlay ── */
+[data-theme="light"] .sidebar-overlay { background: rgba(0,0,0,0.2); }
+
+/* ── Sensor Card Accents (keep visible on light) ── */
+[data-theme="light"] .glass-card.sensor-ph   { border-top-color: rgba(2,132,199,0.5); }
+[data-theme="light"] .glass-card.sensor-tds  { border-top-color: rgba(124,58,237,0.5); }
+[data-theme="light"] .glass-card.sensor-turb { border-top-color: rgba(79,70,229,0.5); }
+[data-theme="light"] .glass-card.sensor-temp { border-top-color: rgba(217,119,6,0.5); }
+
+/* ── Online Badge ── */
+[data-theme="light"] .online-badge.status-safe { background: rgba(5,150,105,0.1); color: #047857; border-color: #059669; }
+[data-theme="light"] .online-badge.status-danger { background: rgba(220,38,38,0.1); color: #b91c1c; border-color: #dc2626; }
+
+/* ── Settings Page Rows ── */
+.settings-row {
+  background: rgba(15,23,42,0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+}
+[data-theme="light"] .settings-row {
+  background: rgba(241,245,249,0.8);
+  border-color: #e2e8f0;
+}
+
+/* ── Navbar on Light ── */
+[data-theme="light"] .navbar { background: rgba(255,255,255,0.85) !important; border-bottom-color: #e2e8f0 !important; }
+
+/* ── Auth Box ── */
+[data-theme="light"] .auth-box { background: rgba(255,255,255,0.9); box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+[data-theme="light"] .auth-box:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+
+/* ── Landing Page ── */
+[data-theme="light"] .hero-bg {
+  background: radial-gradient(circle at 20% 50%, rgba(2,132,199,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(124,58,237,0.06) 0%, transparent 50%),
+              radial-gradient(circle at 50% 80%, rgba(5,150,105,0.04) 0%, transparent 50%);
+}
+[data-theme="light"] .cta-section {
+  background: linear-gradient(135deg, rgba(2,132,199,0.06), rgba(124,58,237,0.06));
+  border-color: #e2e8f0;
+}
+[data-theme="light"] .feature-card { box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important; }
+[data-theme="light"] .feature-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1) !important; }
+
+/* ── Scrollbar ── */
+[data-theme="light"] ::-webkit-scrollbar { width: 8px; }
+[data-theme="light"] ::-webkit-scrollbar-track { background: #f1f5f9; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ── Nav Pills ── */
+[data-theme="light"] .nav-pills .nav-link { color: #64748b; }
+[data-theme="light"] .nav-pills .nav-link.active { background: var(--primary); color: #fff; }
+
+/* ── Bootstrap form-check (toggle switch) ── */
+[data-theme="light"] .form-check-input { background-color: #e2e8f0; border-color: #cbd5e1; }
+[data-theme="light"] .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); }
+
+/* ── Notification dropdown ── */
+[data-theme="light"] #notif-dropdown { background: rgba(255,255,255,0.96) !important; border-color: #e2e8f0 !important; }
+
+/* ── Weekly summary stats ── */
+[data-theme="light"] .glass-card .fw-bold { color: #0f172a; }
 
 /* ==================== MOBILE BOTTOM NAV ==================== */
 .mobile-bottom-nav {
@@ -1212,28 +1839,5 @@ html, body, .glass-card, .sidebar, .form-control, .btn-outline-light,
   color: var(--text-muted);
 }
 
-/* Light theme overrides */
-[data-theme="light"] .disease-modal-sheet {
-  background: linear-gradient(180deg, rgba(248,250,252,0.99) 0%, rgba(241,245,249,0.99) 100%);
-  border-color: #e2e8f0;
-}
 
-[data-theme="light"] .disease-modal-name {
-  color: #0f172a;
-}
-
-[data-theme="light"] .disease-modal-desc,
-[data-theme="light"] .disease-symptom-list li,
-[data-theme="light"] .disease-precaution-box p {
-  color: #475569;
-}
-
-[data-theme="light"] .disease-modal-close {
-  background: rgba(0,0,0,0.04);
-  border-color: #e2e8f0;
-  color: #64748b;
-}
-
-[data-theme="light"] .disease-modal-handle {
-  background: rgba(0,0,0,0.12);
-}
+

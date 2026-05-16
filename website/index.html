@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>AquaSense - Smart Water Quality Monitoring</title>
     <meta name="description"
         content="IoT-based community water quality monitoring system. Real-time pH, TDS, Turbidity, and Temperature tracking with AI-powered intelligence.">
@@ -13,6 +13,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0ea5e9">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <script src="js/theme-loader.js"></script>
     <style>
         .hero-section {
             min-height: 100vh;
@@ -110,7 +111,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 40px 16px;
+        }
+
+        @media (max-width: 575px) {
+            .login-section {
+                padding: 24px 12px;
+                min-height: auto;
+            }
+            .login-section .auth-box {
+                padding: 24px 16px !important;
+            }
+            .hero-section {
+                padding-top: 20px;
+            }
+            .scroll-indicator {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -212,7 +229,7 @@
                 </p>
             </div>
             <div class="row g-4">
-                <div class="col-md-4">
+                <div class="col-sm-6 col-md-4">
                     <div class="glass-card p-4 feature-card h-100">
                         <div class="feature-icon" style="background: rgba(14,165,233,0.15); color: #0ea5e9;">
                             <i class="bi bi-cpu"></i>
@@ -222,7 +239,7 @@
                             via ESP32 microcontroller.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-6 col-md-4">
                     <div class="glass-card p-4 feature-card h-100">
                         <div class="feature-icon" style="background: rgba(139,92,246,0.15); color: #8b5cf6;">
                             <i class="bi bi-lightbulb"></i>
@@ -232,7 +249,7 @@
                             Typhoid, Gastroenteritis & more.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-6 col-md-4">
                     <div class="glass-card p-4 feature-card h-100">
                         <div class="feature-icon" style="background: rgba(16,185,129,0.15); color: #10b981;">
                             <i class="bi bi-bell-fill"></i>
@@ -242,7 +259,7 @@
                             water quality is critical.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-6 col-md-4">
                     <div class="glass-card p-4 feature-card h-100">
                         <div class="feature-icon" style="background: rgba(245,158,11,0.15); color: #f59e0b;">
                             <i class="bi bi-graph-up-arrow"></i>
@@ -252,7 +269,7 @@
                             dashboards.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-6 col-md-4">
                     <div class="glass-card p-4 feature-card h-100">
                         <div class="feature-icon" style="background: rgba(239,68,68,0.15); color: #ef4444;">
                             <i class="bi bi-phone"></i>
@@ -262,7 +279,7 @@
                             on any device.</p>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-sm-6 col-md-4">
                     <div class="glass-card p-4 feature-card h-100">
                         <div class="feature-icon" style="background: rgba(14,165,233,0.15); color: #0ea5e9;">
                             <i class="bi bi-shield-check"></i>
